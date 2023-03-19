@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Aukcje2.0</string>
+    <string name="register">Register</string>
+    <string name="prompt_password">Password</string>
+    <string name="prompt_email">Email</string>
+    <string name="login">Log in</string>
+    <string name="noAccReg">Have no account yet? Register</string>
+</resources>

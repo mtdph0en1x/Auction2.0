@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "866079475300",
+    "project_id": "aukcje2-0",
+    "storage_bucket": "aukcje2-0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:866079475300:android:e025fc0b03c24871734171",
+        "android_client_info": {
+          "package_name": "com.example.aukcje20"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "866079475300-3s59g50m2vihfh51hccr5g9u8gfldtt7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBb5nBj5TrA7Lx421BbBfHkwAWP4rF0B3U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "866079475300-3s59g50m2vihfh51hccr5g9u8gfldtt7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
