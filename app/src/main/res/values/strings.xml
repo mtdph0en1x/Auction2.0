@@ -5,4 +5,11 @@
     <string name="prompt_email">Email</string>
     <string name="login">Log in</string>
     <string name="noAccReg">Have no account yet? Register</string>
+    <string name="auction">Auction2.0</string>
+    <string name="profile">profile</string>
+    <string name="logout">logout</string>
+    <string name="settings">settings</string>
+    <string name="nav_home">home</string>
+    <string name="open">open</string>
+    <string name="close">close</string>
 </resources>
