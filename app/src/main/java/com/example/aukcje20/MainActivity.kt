@@ -20,10 +20,7 @@ class MainActivity : AppCompatActivity() {
         // Find the NavigationView
         val navView: NavigationView = findViewById(R.id.nav_view)
 
-        // Set up the ActionBar
-        setSupportActionBar(findViewById(R.id.toolbar))
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setHomeAsUpIndicator(com.google.android.material.R.drawable.ic_arrow_back_black_24)
+
 
         // Set up the navigation drawer menu
         navView.setNavigationItemSelectedListener {
