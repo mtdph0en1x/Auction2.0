@@ -19,6 +19,7 @@ class Register : AppCompatActivity() {
     private lateinit var registerButton: Button
     private lateinit var emailR: EditText
     private lateinit var passwordR: EditText
+    private lateinit var VerifyPassword: EditText
 
     public override fun onStart() {
         super.onStart()
@@ -34,12 +35,34 @@ class Register : AppCompatActivity() {
 
         emailR = findViewById(R.id.email)
         passwordR = findViewById(R.id.password)
+        VerifyPassword = findViewById(R.id.Verifypassword)
         registerButton = findViewById(R.id.registerButton)
 
 
         registerButton.setOnClickListener {
-            val email = emailR.text.toString()
-            val password = passwordR.text.toString()
+            checkCredentials()
+        }
+    }
+
+    private fun checkCredentials() {
+        val email = emailR.text.toString()
+        val password = passwordR.text.toString()
+        val verify = VerifyPassword.text.toString()
+
+        if(email.isEmpty() || !email.contains("@"))
+        {
+            Toast.makeText(this,"Wrong Email",Toast.LENGTH_SHORT).show()
+        }
+        else if(password.length < 6)
+        {
+            Toast.makeText(this,"Too short Password (at least 6 letters)",Toast.LENGTH_SHORT).show()
+        }
+        else if(password != verify)
+        {
+            Toast.makeText(this,"Incorrect Passwords",Toast.LENGTH_SHORT).show()
+        }
+        else
+        {
             registerUser(email, password)
         }
     }
