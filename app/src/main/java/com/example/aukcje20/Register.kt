@@ -51,15 +51,18 @@ class Register : AppCompatActivity() {
 
         if(email.isEmpty() || !email.contains("@"))
         {
-            Toast.makeText(this,"Wrong Email",Toast.LENGTH_SHORT).show()
+            emailR.error = "Enter correct email"
+            //Toast.makeText(this,"Wrong Email",Toast.LENGTH_SHORT).show()
         }
         else if(password.length < 6)
         {
-            Toast.makeText(this,"Too short Password (at least 6 letters)",Toast.LENGTH_SHORT).show()
+            passwordR.error = "Too short Password (at least 6 letters)"
+            //Toast.makeText(this,"Too short Password (at least 6 letters)",Toast.LENGTH_SHORT).show()
         }
         else if(password != verify)
         {
-            Toast.makeText(this,"Incorrect Passwords",Toast.LENGTH_SHORT).show()
+            VerifyPass.error = "Incorrect Passwords"
+            //Toast.makeText(this,"Incorrect Passwords",Toast.LENGTH_SHORT).show()
         }
         else
         {
@@ -78,6 +81,7 @@ class Register : AppCompatActivity() {
                     }?.addOnFailureListener()
                     {
                         Toast.makeText(this,"Email verification sent - Failure",Toast.LENGTH_SHORT).show()
+                        return@addOnFailureListener
                     }
 
                     val intent = Intent(this, Login::class.java)
