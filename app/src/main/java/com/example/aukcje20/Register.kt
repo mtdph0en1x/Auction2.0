@@ -1,11 +1,11 @@
 package com.example.aukcje20
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -19,12 +19,12 @@ class Register : AppCompatActivity() {
     private lateinit var registerButton: Button
     private lateinit var emailR: EditText
     private lateinit var passwordR: EditText
-    private lateinit var VerifyPassword: EditText
+    private lateinit var VerifyPass: EditText
 
     public override fun onStart() {
         super.onStart()
         // Check if user is signed in (non-null) and update UI accordingly.
-        val currentUser = auth.currentUser
+        //val currentUser = auth.currentUser
 
     }
 
@@ -35,7 +35,7 @@ class Register : AppCompatActivity() {
 
         emailR = findViewById(R.id.email)
         passwordR = findViewById(R.id.password)
-        VerifyPassword = findViewById(R.id.Verifypassword)
+        VerifyPass = findViewById(R.id.Verifypassword)
         registerButton = findViewById(R.id.registerButton)
 
 
@@ -47,7 +47,7 @@ class Register : AppCompatActivity() {
     private fun checkCredentials() {
         val email = emailR.text.toString()
         val password = passwordR.text.toString()
-        val verify = VerifyPassword.text.toString()
+        val verify = VerifyPass.text.toString()
 
         if(email.isEmpty() || !email.contains("@"))
         {
@@ -73,7 +73,14 @@ class Register : AppCompatActivity() {
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     val user = auth.currentUser
-                    val intent = Intent(this, MainActivity::class.java)
+                    user?.sendEmailVerification()?.addOnSuccessListener {
+                        Toast.makeText(this,"Email verification sent",Toast.LENGTH_SHORT).show()
+                    }?.addOnFailureListener()
+                    {
+                        Toast.makeText(this,"Email verification sent - Failure",Toast.LENGTH_SHORT).show()
+                    }
+
+                    val intent = Intent(this, Login::class.java)
                     startActivity(intent)
 
                 } else {

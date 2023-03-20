@@ -15,7 +15,8 @@
         android:text="@string/login"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/noAccTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/noAccTextView"
+        tools:ignore="DuplicateSpeakableTextCheck" />
 
     <EditText
         android:id="@+id/username"
@@ -23,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="200dp"
         android:autofillHints=""
-        android:drawableLeft="@drawable/baseline_email_24"
+        android:drawableStart="@drawable/baseline_email_24"
         android:hint="@string/prompt_email"
         android:inputType="textEmailAddress"
         android:minHeight="48dp"
@@ -39,7 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:autofillHints=""
-        android:drawableLeft="@drawable/baseline_lock_24"
+        android:drawableStart="@drawable/baseline_lock_24"
         android:hint="@string/prompt_password"
         android:imeActionLabel="sign in"
         android:imeOptions="actionDone"
