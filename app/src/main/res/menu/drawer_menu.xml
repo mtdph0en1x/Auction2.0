@@ -17,5 +17,11 @@
             android:id="@+id/nav_logout"
             android:icon="@drawable/outline_view_headline_24"
             android:title="@string/logout" />
+        <item
+            android:id="@+id/nav_new_auction"
+            android:icon="@drawable/outline_view_headline_24"
+            android:title="@string/add_a_new_auction" />
+
+
     </group>
 </menu>

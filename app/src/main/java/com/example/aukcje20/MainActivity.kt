@@ -1,7 +1,9 @@
 package com.example.aukcje20
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
+
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
@@ -37,6 +39,12 @@ class MainActivity : AppCompatActivity() {
                     // Handle Settings
                     true
                 }
+                R.id.nav_new_auction -> {
+                    val intent = Intent(this, NewAuction::class.java)
+                    startActivity(intent)
+                    true
+                }
+
                 else -> false
             }
         }
@@ -56,4 +64,6 @@ class MainActivity : AppCompatActivity() {
             super.onSupportNavigateUp()
         }
     }
+
+
 }
