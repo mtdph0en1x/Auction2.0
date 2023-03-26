@@ -36,7 +36,6 @@ class NewAuction : AppCompatActivity() {
         // get a reference to the Firebase Authentication instance
         auth = FirebaseAuth.getInstance()
 
-
         // get references to the views
         val nameEditText = binding.editTextName
         val descriptionEditText = binding.editTextDescription
