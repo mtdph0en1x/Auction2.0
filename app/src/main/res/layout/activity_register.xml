@@ -11,11 +11,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
-        android:layout_marginTop="56dp"
+        android:layout_marginTop="24dp"
         android:text="@string/register"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/password" />
+        app:layout_constraintTop_toBottomOf="@+id/Verifypassword"
+        tools:ignore="DuplicateSpeakableTextCheck" />
 
     <EditText
         android:id="@+id/email"
@@ -23,6 +24,7 @@
         android:layout_height="48dp"
         android:layout_marginTop="200dp"
         android:autofillHints=""
+        android:drawableLeft="@drawable/baseline_email_24"
         android:hint="@string/prompt_email"
         android:inputType="textEmailAddress"
         android:selectAllOnFocus="true"
@@ -34,8 +36,9 @@
         android:id="@+id/password"
         android:layout_width="397dp"
         android:layout_height="49dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:autofillHints=""
+        android:drawableLeft="@drawable/baseline_lock_24"
         android:hint="@string/prompt_password"
         android:imeActionLabel="sign in"
         android:imeOptions="actionDone"
@@ -44,6 +47,22 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/email" />
+
+    <EditText
+        android:id="@+id/Verifypassword"
+        android:layout_width="397dp"
+        android:layout_height="49dp"
+        android:layout_marginTop="8dp"
+        android:autofillHints=""
+        android:drawableLeft="@drawable/baseline_lock_24"
+        android:hint="Verify password"
+        android:imeActionLabel="sign in"
+        android:imeOptions="actionDone"
+        android:inputType="textPassword"
+        android:selectAllOnFocus="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/password" />
 
     <ProgressBar
         android:id="@+id/loading"
@@ -61,12 +80,12 @@
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="103dp"
-        android:layout_height="37dp"
-        android:layout_marginBottom="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
         android:gravity="center"
         android:text="@string/register"
-        android:textSize="25sp"
+        android:textSize="48sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/email"
         app:layout_constraintEnd_toEndOf="parent"
