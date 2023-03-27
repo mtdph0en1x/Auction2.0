@@ -21,8 +21,15 @@
     <string name="buy_now_price">Buy Now Price</string>
     <string name="add_photo_s">Add photo(s)</string>
     <string name="start_price">Start Price</string>
-    
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="name">Name:</string>
     <string name="actual_price">Actual price:</string>
+    <string name="show_picture_of_item">Show picture of item</string>
+    <string name="go_back">Go back</string>
+    <string name="put_into_liked">Put into liked</string>
+    <string name="name_of_item">Name_of_Item</string>
+    <string name="description">Description</string>
+    <string name="price_of_item">Price_of_item</string>
+    <string name="actual_price2">Actual Price:</string>
 </resources>
