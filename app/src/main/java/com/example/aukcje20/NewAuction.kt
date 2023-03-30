@@ -79,25 +79,32 @@ class NewAuction : AppCompatActivity() {
                 imageRef.downloadUrl.addOnSuccessListener { uri ->
                     // create a new auction object
 
-                    val auction = Auction(
-                        name = name,
-                        description = description,
-                        startPrice = startPrice ?: 0.0,
-                        buyNowPrice = buyNowPrice ?: 0.0,
-                        imageUrl = uri.toString()
-                    )
+                    val auction = auth.currentUser?.let { it1 ->
+                        Auction(
+                            uid  = it1.uid,
+                            name = name,
+                            description = description,
+                            startPrice = startPrice ?: 0.0,
+                            buyNowPrice = buyNowPrice ?: 0.0,
+                            imageUrl = uri.toString()
+                        )
+                    }
 
                     // add the new auction to the Firebase Firestore database
                     val db = Firebase.firestore
-                    db.collection("auctions")
-                        .add(auction)
-                        .addOnSuccessListener {
-                            Toast.makeText(this, "Auction created successfully", Toast.LENGTH_SHORT).show()
-                            finish()
-                        }
-                        .addOnFailureListener { e ->
-                            Toast.makeText(this, "Error creating auction: ${e.message}", Toast.LENGTH_SHORT).show()
-                        }
+                    if (auction != null) {
+                        db.collection("auctions")
+                            .add(auction)
+                            .addOnSuccessListener {
+                                Toast.makeText(this, "Auction created successfully", Toast.LENGTH_SHORT).show()
+                                finish()
+                                val intent = Intent(this, MainActivity::class.java)
+                                startActivity(intent)
+                            }
+                            .addOnFailureListener { e ->
+                                Toast.makeText(this, "Error creating auction: ${e.message}", Toast.LENGTH_SHORT).show()
+                            }
+                    }
                 }
             }
             .addOnFailureListener { e ->

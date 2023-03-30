@@ -7,13 +7,14 @@ import android.widget.Toast
 
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -22,7 +23,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var auctionList: ArrayList<Auction>
     private var db = Firebase.firestore
-
+    private lateinit var auth: FirebaseAuth
 
     @SuppressLint("PrivateResource")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,6 +67,11 @@ class MainActivity : AppCompatActivity() {
                     startActivity(intent)
                     true
                 }
+                R.id.nav_my_auction ->{
+                    val intent = Intent(this, MyAuction::class.java)
+                    startActivity(intent)
+                    true
+                }
 
                 else -> false
             }
@@ -79,6 +85,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun getAuctions() {
         db = FirebaseFirestore.getInstance()
+        auth = FirebaseAuth.getInstance()
+
         db.collection("auctions").get()
             .addOnSuccessListener {
                 if(!it.isEmpty){
@@ -90,7 +98,8 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
 
-                    var adapter = StartAuctionsAdapter(auctionList)
+                    val adapter = StartAuctionsAdapter(auctionList)
+
                     recyclerView.adapter = adapter
                     adapter.setOnItemClickListener(object: StartAuctionsAdapter.onItemClickListener{
                         override fun onItemClick(position: Int) {
@@ -124,3 +133,5 @@ class MainActivity : AppCompatActivity() {
 
 
 }
+
+
