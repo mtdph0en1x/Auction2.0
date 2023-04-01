@@ -3,8 +3,9 @@ package com.example.aukcje20
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
 import android.widget.Toast
-
+import androidx.appcompat.widget.SearchView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
@@ -14,14 +15,16 @@ import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_main.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var auctionList: ArrayList<Auction>
+    private lateinit var tempAuctionList: ArrayList<Auction>
     private var db = Firebase.firestore
     private lateinit var auth: FirebaseAuth
 
@@ -37,15 +40,15 @@ class MainActivity : AppCompatActivity() {
         val navView: NavigationView = findViewById(R.id.nav_view)
 
 
+
+
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = GridLayoutManager(this,2)
 
-        auctionList = arrayListOf()
+        auctionList = arrayListOf<Auction>()
+        tempAuctionList = arrayListOf<Auction>()
 
         getAuctions()
-
-
-
 
         // Set up the navigation drawer menu
         navView.setNavigationItemSelectedListener {
@@ -83,6 +86,45 @@ class MainActivity : AppCompatActivity() {
         toggle.syncState()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+
+        menuInflater.inflate(R.menu.search_action,menu)
+
+        val item = menu?.findItem(R.id.search)
+        val searchView = item?.actionView as SearchView
+
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(p0: String?): Boolean {
+                TODO("Not yet implemented")
+            }
+
+            override fun onQueryTextChange(p0: String?): Boolean {
+
+                tempAuctionList.clear()
+                val searchText = p0!!.lowercase(Locale.getDefault())
+                if(searchText.isNotEmpty()){
+                    auctionList.forEach{
+                        if(it.name?.lowercase(Locale.getDefault())?.contains(searchText) == true){
+                            tempAuctionList.add(it)
+                        }
+                    }
+                    recyclerView.adapter!!.notifyDataSetChanged()
+
+                }else{
+
+                    tempAuctionList.clear()
+                    tempAuctionList.addAll(auctionList)
+                    recyclerView.adapter!!.notifyDataSetChanged()
+
+                }
+
+                return false
+            }
+
+        })
+        return super.onCreateOptionsMenu(menu)
+    }
+
     private fun getAuctions() {
         db = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
@@ -98,9 +140,12 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
 
-                    val adapter = StartAuctionsAdapter(auctionList)
+                    tempAuctionList.addAll(auctionList)
 
+                    val adapter = StartAuctionsAdapter(tempAuctionList)
                     recyclerView.adapter = adapter
+
+
                     adapter.setOnItemClickListener(object: StartAuctionsAdapter.onItemClickListener{
                         override fun onItemClick(position: Int) {
                             //Toast.makeText(this@MainActivity,"STH $position",Toast.LENGTH_SHORT).show()
@@ -130,8 +175,6 @@ class MainActivity : AppCompatActivity() {
             super.onSupportNavigateUp()
         }
     }
-
-
 }
 
 
