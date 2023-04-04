@@ -40,14 +40,16 @@ class MainActivity : AppCompatActivity() {
         val navView: NavigationView = findViewById(R.id.nav_view)
 
 
-
-
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = GridLayoutManager(this,2)
 
+        //Initialization of list of Auctions
         auctionList = arrayListOf<Auction>()
+
+        //Necessary to create temporary list of Auctions thanks to searchView
         tempAuctionList = arrayListOf<Auction>()
 
+        //Function which enables to show list of Auctions
         getAuctions()
 
         // Set up the navigation drawer menu
@@ -98,6 +100,7 @@ class MainActivity : AppCompatActivity() {
                 TODO("Not yet implemented")
             }
 
+            @SuppressLint("NotifyDataSetChanged")
             override fun onQueryTextChange(p0: String?): Boolean {
 
                 tempAuctionList.clear()
