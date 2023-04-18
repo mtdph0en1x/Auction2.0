@@ -33,4 +33,6 @@
     <string name="price_of_item">Price_of_item</string>
     <string name="actual_price2">Actual Price:</string>
     <string name="my_auctions">My Auctions</string>
+    <string name="edit_auction">Edit an Existing Auction</string>
+    <string name="update">Update</string>
 </resources>

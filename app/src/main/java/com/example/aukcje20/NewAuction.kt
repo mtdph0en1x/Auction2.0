@@ -47,6 +47,8 @@ class NewAuction : AppCompatActivity() {
         // set up click listeners for the buttons
         addPhotoButton.setOnClickListener { openFileChooser() }
         createAuctionButton.setOnClickListener { createAuction(
+            UUID.randomUUID().toString().trim(),
+            auth.currentUser?.uid.toString().trim(),
             nameEditText.text.toString().trim(),
             descriptionEditText.text.toString().trim(),
             startPriceEditText.text.toString().toDoubleOrNull(),
@@ -61,7 +63,7 @@ class NewAuction : AppCompatActivity() {
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST)
     }
 
-    private fun createAuction(name: String, description: String, startPrice: Double?, buyNowPrice: Double?) {
+    private fun createAuction(auctionid: String, uid: String, name: String, description: String, startPrice: Double?, buyNowPrice: Double?) {
         if (imageUri == null) {
             Toast.makeText(this, "Please add a photo", Toast.LENGTH_SHORT).show()
             return
@@ -79,9 +81,10 @@ class NewAuction : AppCompatActivity() {
                 imageRef.downloadUrl.addOnSuccessListener { uri ->
                     // create a new auction object
 
-                    val auction = auth.currentUser?.let { it1 ->
+                    val auction = auth.currentUser?.let {
                         Auction(
-                            uid  = it1.uid,
+                            auctionid = auctionid,
+                            uid = uid,
                             name = name,
                             description = description,
                             startPrice = startPrice ?: 0.0,
@@ -92,9 +95,10 @@ class NewAuction : AppCompatActivity() {
 
                     // add the new auction to the Firebase Firestore database
                     val db = Firebase.firestore
+
                     if (auction != null) {
-                        db.collection("auctions")
-                            .add(auction)
+                        db.collection("auctions").document(auctionid)
+                            .set(auction)
                             .addOnSuccessListener {
                                 Toast.makeText(this, "Auction created successfully", Toast.LENGTH_SHORT).show()
                                 finish()

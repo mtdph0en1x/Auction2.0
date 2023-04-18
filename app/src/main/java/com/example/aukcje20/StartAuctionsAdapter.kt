@@ -19,7 +19,8 @@ class StartAuctionsAdapter(private val auctionList: ArrayList<Auction>) : Recycl
         mListener = listener
     }
 
-    class MyViewHolder(itemView: View,listener: onItemClickListener) : RecyclerView.ViewHolder(itemView) {
+    @Suppress("DEPRECATION")
+    class MyViewHolder(itemView: View, listener: onItemClickListener) : RecyclerView.ViewHolder(itemView) {
         val tvName: TextView = itemView.findViewById(R.id.tvName)
         val tvPrice: TextView = itemView.findViewById(R.id.tvPrice)
         val tvImage: ImageView = itemView.findViewById(R.id.Picture)
@@ -44,7 +45,9 @@ class StartAuctionsAdapter(private val auctionList: ArrayList<Auction>) : Recycl
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.tvName.text = auctionList[position].name
         holder.tvPrice.text = "${auctionList[position].startPrice.toString()} $"
-        Picasso.get().load(auctionList[position].imageUrl).into(holder.tvImage)
+        if (!auctionList[position].imageUrl.isNullOrEmpty()) {
+            Picasso.get().load(auctionList[position].imageUrl).into(holder.tvImage)
+        }
     }
 }
 

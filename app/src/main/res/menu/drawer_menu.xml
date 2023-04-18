@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
 
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/outline_view_headline_24"
             android:title="@string/nav_home" />
+        <item
+            android:id="@+id/nav_my_auction"
+            android:icon="@drawable/outline_view_headline_24"
+            android:title="@string/my_auctions" />
+        <item
+            android:id="@+id/nav_new_auction"
+            android:icon="@drawable/outline_view_headline_24"
+            android:title="@string/add_a_new_auction" />
         <item
             android:id="@+id/nav_profile"
             android:icon="@drawable/outline_view_headline_24"
@@ -19,14 +26,8 @@
             android:id="@+id/nav_logout"
             android:icon="@drawable/outline_view_headline_24"
             android:title="@string/logout" />
-        <item
-            android:id="@+id/nav_new_auction"
-            android:icon="@drawable/outline_view_headline_24"
-            android:title="@string/add_a_new_auction" />
-        <item
-            android:id="@+id/nav_my_auction"
-            android:icon="@drawable/outline_view_headline_24"
-            android:title="@string/my_auctions" />
+
+
 
 
     </group>

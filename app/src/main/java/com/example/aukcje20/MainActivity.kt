@@ -78,6 +78,7 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
 
+
                 else -> false
             }
         }
@@ -153,10 +154,12 @@ class MainActivity : AppCompatActivity() {
                         override fun onItemClick(position: Int) {
                             //Toast.makeText(this@MainActivity,"STH $position",Toast.LENGTH_SHORT).show()
                             val intent = Intent(this@MainActivity,ShowAuction::class.java)
+                            intent.putExtra("UId",auctionList[position].uid)
                             intent.putExtra("Name",auctionList[position].name)
                             intent.putExtra("Description",auctionList[position].description)
                             intent.putExtra("Picture",auctionList[position].imageUrl)
                             intent.putExtra("Price",auctionList[position].startPrice)
+                            intent.putExtra("Auctionid",auctionList[position].auctionid)
                             startActivity(intent)
                         }
 
