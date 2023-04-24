@@ -74,7 +74,7 @@
         android:layout_height="match_parent">
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/bidding_button_submit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="250dp"
@@ -90,11 +90,11 @@
             android:layout_height="wrap_content"
             android:autofillHints="0.0"
             android:ems="10"
+            android:hint="@string/price"
             android:inputType="numberDecimal"
             android:minHeight="48dp"
-            android:text="@string/price"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/button"
+            app:layout_constraintEnd_toStartOf="@+id/bidding_button_submit"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="LabelFor,DuplicateSpeakableTextCheck" />
