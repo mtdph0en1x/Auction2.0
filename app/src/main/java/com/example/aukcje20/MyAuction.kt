@@ -101,7 +101,6 @@ class MyAuction : AppCompatActivity() {
 
                     adapter.setOnItemClickListener(object: StartAuctionsAdapter.onItemClickListener{
                         override fun onItemClick(position: Int) {
-                            //Toast.makeText(this@MainActivity,"STH $position",Toast.LENGTH_SHORT).show()
                             val intent = Intent(this@MyAuction,ShowAuction::class.java)
                             intent.putExtra("Name",auctionList[position].name)
                             intent.putExtra("Description",auctionList[position].description)
@@ -109,7 +108,6 @@ class MyAuction : AppCompatActivity() {
                             intent.putExtra("Price",auctionList[position].startPrice)
                             startActivity(intent)
                         }
-
                     })
 
                 }

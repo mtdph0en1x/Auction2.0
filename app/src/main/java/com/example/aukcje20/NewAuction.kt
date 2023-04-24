@@ -10,7 +10,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.aukcje20.databinding.ActivityNewAuctionBinding
 import com.google.firebase.auth.FirebaseAuth
-
+import java.util.Calendar
+import java.text.SimpleDateFormat
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
@@ -73,6 +74,10 @@ class NewAuction : AppCompatActivity() {
         val storage = Firebase.storage
         val storageRef = storage.reference
 
+        val currentTime = Calendar.getInstance().time
+        val dateFormat = SimpleDateFormat("dd-MM-yyyy")
+        val currentTimeString = dateFormat.format(currentTime)
+
         // create a reference to the image file and upload it to Firebase Storage
         val imageRef = storageRef.child("images/${UUID.randomUUID()}")
         imageRef.putFile(imageUri!!)
@@ -89,7 +94,13 @@ class NewAuction : AppCompatActivity() {
                             description = description,
                             startPrice = startPrice ?: 0.0,
                             buyNowPrice = buyNowPrice ?: 0.0,
-                            imageUrl = uri.toString()
+                            imageUrl = uri.toString(),
+                            //bidders = emptyList()
+                            bidders = listOf(
+                                mapOf("uid" to uid, "data" to currentTimeString,"price" to 100.0),
+                                mapOf("uid" to uid, "data" to currentTimeString,"price" to 50.0),
+                                mapOf("uid" to uid, "data" to currentTimeString,"price" to 10.0)
+                            )
                         )
                     }
 

@@ -20,6 +20,8 @@ class ShowAuction : AppCompatActivity() {
     private lateinit var aucPicture: ImageView
     private lateinit var aucGoBack: ImageButton
     private lateinit var aucEditButton: Button
+    private lateinit var aucBid: Button
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +34,7 @@ class ShowAuction : AppCompatActivity() {
         aucPicture = findViewById(R.id.auc_iv_picture)
         aucGoBack = findViewById(R.id.gobackbtn)
         aucEditButton = findViewById(R.id.EditButton)
+        aucBid = findViewById(R.id.show_auction_bid_button)
 
 
         //Implementation of items form MainActivity
@@ -64,6 +67,12 @@ class ShowAuction : AppCompatActivity() {
 
         aucEditButton.setOnClickListener {
             val intent = Intent(this, EditAuction::class.java)
+            intent.putExtra("AuctionID", auctionId)
+            startActivity(intent)
+        }
+
+        aucBid.setOnClickListener{
+            val intent = Intent(this, BidAuction::class.java)
             intent.putExtra("AuctionID", auctionId)
             startActivity(intent)
         }

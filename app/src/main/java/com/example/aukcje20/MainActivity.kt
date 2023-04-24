@@ -39,9 +39,10 @@ class MainActivity : AppCompatActivity() {
         // Find the NavigationView
         val navView: NavigationView = findViewById(R.id.nav_view)
 
+        auth = FirebaseAuth.getInstance()
 
         recyclerView = findViewById(R.id.recyclerView)
-        recyclerView.layoutManager = GridLayoutManager(this,2)
+        recyclerView.layoutManager = GridLayoutManager(this, 2)
 
         //Initialization of list of Auctions
         auctionList = arrayListOf<Auction>()
@@ -72,7 +73,7 @@ class MainActivity : AppCompatActivity() {
                     startActivity(intent)
                     true
                 }
-                R.id.nav_my_auction ->{
+                R.id.nav_my_auction -> {
                     val intent = Intent(this, MyAuction::class.java)
                     startActivity(intent)
                     true
@@ -131,7 +132,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun getAuctions() {
         db = FirebaseFirestore.getInstance()
-        auth = FirebaseAuth.getInstance()
 
         db.collection("auctions").get()
             .addOnSuccessListener {
@@ -152,7 +152,6 @@ class MainActivity : AppCompatActivity() {
 
                     adapter.setOnItemClickListener(object: StartAuctionsAdapter.onItemClickListener{
                         override fun onItemClick(position: Int) {
-                            //Toast.makeText(this@MainActivity,"STH $position",Toast.LENGTH_SHORT).show()
                             val intent = Intent(this@MainActivity,ShowAuction::class.java)
                             intent.putExtra("UId",auctionList[position].uid)
                             intent.putExtra("Name",auctionList[position].name)

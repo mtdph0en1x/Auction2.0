@@ -35,4 +35,11 @@
     <string name="my_auctions">My Auctions</string>
     <string name="edit_auction">Edit an Existing Auction</string>
     <string name="update">Update</string>
+    <string name="uid">UID</string>
+    <string name="data">Data</string>
+    <string name="price">Price</string>
+    <string name="bidders">Bidders</string>
+    <string name="submit">Submit</string>
+    <string name="bid">BID</string>
+    <string name="date">Date</string>
 </resources>

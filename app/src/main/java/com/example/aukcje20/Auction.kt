@@ -7,8 +7,6 @@ data class Auction(
     var description: String? = null,
     var startPrice: Double? = null,
     var buyNowPrice: Double? = null,
-    var imageUrl: String? = null ,
-
-
-    ){
-}
+    var imageUrl: String? = null,
+    val bidders: List<Map<String, Any>> = emptyList()
+    )
