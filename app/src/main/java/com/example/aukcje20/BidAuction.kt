@@ -1,7 +1,9 @@
 package com.example.aukcje20
 
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.health.TimerStat
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -10,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -19,6 +22,7 @@ class BidAuction : AppCompatActivity() {
     private val db = Firebase.firestore
     private lateinit var bidSubmit: Button
 
+    @SuppressLint("SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_bid_auction)
@@ -45,57 +49,42 @@ class BidAuction : AppCompatActivity() {
         bidSubmit.setOnClickListener{
 
             val currentTime = Calendar.getInstance().time
-            val dateFormat = SimpleDateFormat("dd-MM-yyyy",Locale.getDefault())
-            val date = dateFormat.format(currentTime).orEmpty()
+            val dateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss",Locale.getDefault())
+            var date = dateFormat.format(currentTime).orEmpty()
 
             val price = findViewById<EditText>(R.id.bidding_edittext).text.toString()
-
 
             docRef.get().addOnSuccessListener { document ->
                 val auction: Auction? = document.toObject(Auction::class.java)
                 val uid = auction?.uid
-
+                val startPrice = auction?.startPrice
+                val priceDouble = price.toDoubleOrNull()
 
                 val newItem = hashMapOf(
                     "uid" to uid,
                     "data" to date,
-                    "price" to price
+                    "price" to priceDouble
                 )
 
-                    docRef.update("bidders", FieldValue.arrayUnion(newItem))
-                        .addOnSuccessListener {
-                            Toast.makeText(this, "WE DID IT", Toast.LENGTH_SHORT).show()
+                if (priceDouble != null) {
+                    if(priceDouble > startPrice!!) {
+                        docRef.update("bidders",FieldValue.arrayUnion(newItem))
+                            .addOnSuccessListener {
+                                //Toast.makeText(this, "WE DID IT", Toast.LENGTH_SHORT).show()
+                            }
+                        docRef.update("startPrice", price.toDoubleOrNull()).addOnSuccessListener {
+                            //Toast.makeText(this, "WE DID IT AGAIN", Toast.LENGTH_SHORT).show()
                         }
-
-                    docRef.update("startPrice", price.toDoubleOrNull()).addOnSuccessListener {
-                        Toast.makeText(this, "WE DID IT AGAIN", Toast.LENGTH_SHORT).show()
                     }
+                    else
+                    {
+                        Toast.makeText(this, "DO NOT WORK", Toast.LENGTH_SHORT).show()
+                    }
+                }
 
             }
 
         }
 
     }
-
-    /*private fun onAddButtonClick() {
-        val name = findViewById<EditText>(R.id.nameEditText).text.toString()
-        val age = findViewById<EditText>(R.id.ageEditText).text.toString().toInt()
-
-
-        // Get the current data from the Firestore document
-        docRef.get().addOnSuccessListener { documentSnapshot ->
-            val myData = documentSnapshot.toObject(MyDataClass::class.java)
-
-            // Create a new list with the existing items and the new item
-            val updatedList = myData.myArray.toMutableList().apply {
-                add(mapOf("name" to name, "age" to age))
-            }
-
-            // Create a new instance of MyDataClass with the updated list
-            val updatedData = MyDataClass(updatedList)
-
-            // Set the value of the Firestore document to the updated data
-            docRef.set(updatedData)
-        }
-    }*/
 }

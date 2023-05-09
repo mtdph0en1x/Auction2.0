@@ -95,12 +95,7 @@ class NewAuction : AppCompatActivity() {
                             startPrice = startPrice ?: 0.0,
                             buyNowPrice = buyNowPrice ?: 0.0,
                             imageUrl = uri.toString(),
-                            //bidders = emptyList()
-                            bidders = listOf(
-                                mapOf("uid" to uid, "data" to currentTimeString,"price" to 100.0),
-                                mapOf("uid" to uid, "data" to currentTimeString,"price" to 50.0),
-                                mapOf("uid" to uid, "data" to currentTimeString,"price" to 10.0)
-                            )
+                            bidders = emptyList()
                         )
                     }
 

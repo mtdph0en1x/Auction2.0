@@ -22,17 +22,17 @@
 
         <TextView
             android:id="@+id/bid_data"
-            android:layout_width="100dp"
+            android:layout_width="130dp"
             android:layout_height="wrap_content"
             android:text="@string/data"
-            android:textAlignment="viewEnd"
+            android:textAlignment="textEnd"
             android:textColor="@color/black"
             android:textSize="10sp"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/bid_price"
-            android:layout_width="100dp"
+            android:layout_width="70dp"
             android:layout_height="wrap_content"
             android:text="@string/price"
             android:textAlignment="textEnd"
