@@ -3,7 +3,6 @@ package com.example.aukcje20
 import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.health.TimerStat
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -12,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import java.sql.Timestamp
+import kotlinx.android.synthetic.main.activity_login.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -50,24 +49,63 @@ class BidAuction : AppCompatActivity() {
 
             val currentTime = Calendar.getInstance().time
             val dateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss",Locale.getDefault())
-            var date = dateFormat.format(currentTime).orEmpty()
+            val date = dateFormat.format(currentTime).orEmpty()
 
             val price = findViewById<EditText>(R.id.bidding_edittext).text.toString()
 
             docRef.get().addOnSuccessListener { document ->
                 val auction: Auction? = document.toObject(Auction::class.java)
                 val uid = auction?.uid
-                val startPrice = auction?.startPrice
+
+                val docUser = db.collection("users").document(uid.toString())
+
+                docUser.get().addOnSuccessListener { documentSnapshot ->
+                    if (documentSnapshot.exists()){
+                        val username = documentSnapshot.getString("nickname")
+                        val startPrice = auction?.startPrice
+                        val priceDouble = price.toDoubleOrNull()
+
+                        val newItem = hashMapOf(
+                            "uid" to username,
+                            "data" to date,
+                            "price" to priceDouble
+                        )
+
+                        if (priceDouble != null) {
+                            if(priceDouble > startPrice!! ) {
+                                docRef.update("bidders",FieldValue.arrayUnion(newItem))
+                                    .addOnSuccessListener {
+                                        //Toast.makeText(this, "WE DID IT", Toast.LENGTH_SHORT).show()
+                                    }
+                                docRef.update("startPrice", price.toDoubleOrNull()).addOnSuccessListener {
+                                    //Toast.makeText(this, "WE DID IT AGAIN", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                            else
+                            {
+                                Toast.makeText(this, "DO NOT WORK", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+
+
+                    }
+                    else
+                    {
+                        Toast.makeText(this, "DO NOT WORK USERNAME", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                /*val startPrice = auction?.startPrice
                 val priceDouble = price.toDoubleOrNull()
 
                 val newItem = hashMapOf(
-                    "uid" to uid,
+                    "uid" to username,
                     "data" to date,
                     "price" to priceDouble
                 )
 
                 if (priceDouble != null) {
-                    if(priceDouble > startPrice!!) {
+                    if(priceDouble > startPrice!! ) {
                         docRef.update("bidders",FieldValue.arrayUnion(newItem))
                             .addOnSuccessListener {
                                 //Toast.makeText(this, "WE DID IT", Toast.LENGTH_SHORT).show()
@@ -80,7 +118,7 @@ class BidAuction : AppCompatActivity() {
                     {
                         Toast.makeText(this, "DO NOT WORK", Toast.LENGTH_SHORT).show()
                     }
-                }
+                }*/
 
             }
 
