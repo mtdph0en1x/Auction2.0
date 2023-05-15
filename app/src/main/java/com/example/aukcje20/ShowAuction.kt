@@ -21,6 +21,7 @@ class ShowAuction : AppCompatActivity() {
     private lateinit var aucGoBack: ImageButton
     private lateinit var aucEditButton: Button
     private lateinit var aucBid: Button
+    private lateinit var aucEnd: TextView
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,7 +36,7 @@ class ShowAuction : AppCompatActivity() {
         aucGoBack = findViewById(R.id.gobackbtn)
         aucEditButton = findViewById(R.id.EditButton)
         aucBid = findViewById(R.id.show_auction_bid_button)
-
+        aucEnd = findViewById(R.id.tv_date_auction_end)
 
         //Implementation of items form MainActivity
         val bundle: Bundle? = intent.extras
@@ -45,12 +46,14 @@ class ShowAuction : AppCompatActivity() {
         val priceS = "${bundle.getDouble("Price")} $"
         val uid = bundle.getString("UId")
         val auctionId = bundle.getString("Auctionid")
+        val auctionEnd = bundle.getString("auctionEnd")
 
         //Setting values
         aucName.text = name
         aucDescription.text = dsc
         Picasso.get().load(image).into(aucPicture)
         aucPrice.text = priceS
+        aucEnd.text = auctionEnd
 
         //Button which enables to go back to main activity
         aucGoBack.setOnClickListener{
@@ -74,6 +77,7 @@ class ShowAuction : AppCompatActivity() {
         aucBid.setOnClickListener{
             val intent = Intent(this, BidAuction::class.java)
             intent.putExtra("AuctionID", auctionId)
+            intent.putExtra("auctionEnd",auctionEnd)
             startActivity(intent)
         }
 

@@ -47,7 +47,7 @@ class EditAuction : AppCompatActivity() {
                     }
 
                     // Update the auction object with the new values
-                    updatedAuction = Auction(auction.auctionid, auction.uid, name, description, startPrice, 8.1, auction.imageUrl)
+                    updatedAuction = Auction(auction.auctionid, auction.uid, name, description, startPrice, 8.1, auction.imageUrl,auction.auctionEnd)
 
 
                     db.collection("auctions")

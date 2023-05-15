@@ -28,6 +28,7 @@ class BidAuction : AppCompatActivity() {
 
         val bundle: Bundle? = intent.extras
         val auctionId = bundle!!.getString("AuctionID")
+        val auctionEnd = bundle!!.getString("auctionEnd").toString()
 
         val docRef = db.collection("auctions").document(auctionId.toString())
 
@@ -73,17 +74,23 @@ class BidAuction : AppCompatActivity() {
 
                         if (priceDouble != null) {
                             if(priceDouble > startPrice!! ) {
-                                docRef.update("bidders",FieldValue.arrayUnion(newItem))
-                                    .addOnSuccessListener {
-                                        //Toast.makeText(this, "WE DID IT", Toast.LENGTH_SHORT).show()
+                                if(date < auctionEnd){
+                                    docRef.update("bidders",FieldValue.arrayUnion(newItem))
+                                        .addOnSuccessListener {
+                                            //Toast.makeText(this, "WE DID IT", Toast.LENGTH_SHORT).show()
+                                        }
+                                    docRef.update("startPrice", price.toDoubleOrNull()).addOnSuccessListener {
+                                        //Toast.makeText(this, "WE DID IT AGAIN", Toast.LENGTH_SHORT).show()
                                     }
-                                docRef.update("startPrice", price.toDoubleOrNull()).addOnSuccessListener {
-                                    //Toast.makeText(this, "WE DID IT AGAIN", Toast.LENGTH_SHORT).show()
+                                }
+                                else
+                                {
+                                    Toast.makeText(this, "AUCTION FINISHED", Toast.LENGTH_SHORT).show()
                                 }
                             }
                             else
                             {
-                                Toast.makeText(this, "DO NOT WORK", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(this, "TOO SMALL AMOUNT", Toast.LENGTH_SHORT).show()
                             }
                         }
 
@@ -94,31 +101,6 @@ class BidAuction : AppCompatActivity() {
                         Toast.makeText(this, "DO NOT WORK USERNAME", Toast.LENGTH_SHORT).show()
                     }
                 }
-
-                /*val startPrice = auction?.startPrice
-                val priceDouble = price.toDoubleOrNull()
-
-                val newItem = hashMapOf(
-                    "uid" to username,
-                    "data" to date,
-                    "price" to priceDouble
-                )
-
-                if (priceDouble != null) {
-                    if(priceDouble > startPrice!! ) {
-                        docRef.update("bidders",FieldValue.arrayUnion(newItem))
-                            .addOnSuccessListener {
-                                //Toast.makeText(this, "WE DID IT", Toast.LENGTH_SHORT).show()
-                            }
-                        docRef.update("startPrice", price.toDoubleOrNull()).addOnSuccessListener {
-                            //Toast.makeText(this, "WE DID IT AGAIN", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                    else
-                    {
-                        Toast.makeText(this, "DO NOT WORK", Toast.LENGTH_SHORT).show()
-                    }
-                }*/
 
             }
 

@@ -45,10 +45,10 @@ class MainActivity : AppCompatActivity() {
         recyclerView.layoutManager = GridLayoutManager(this, 2)
 
         //Initialization of list of Auctions
-        auctionList = arrayListOf<Auction>()
+        auctionList = arrayListOf()
 
         //Necessary to create temporary list of Auctions thanks to searchView
-        tempAuctionList = arrayListOf<Auction>()
+        tempAuctionList = arrayListOf()
 
         //Function which enables to show list of Auctions
         getAuctions()
@@ -78,8 +78,6 @@ class MainActivity : AppCompatActivity() {
                     startActivity(intent)
                     true
                 }
-
-
                 else -> false
             }
         }
@@ -114,9 +112,7 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                     recyclerView.adapter!!.notifyDataSetChanged()
-
                 }else{
-
                     tempAuctionList.clear()
                     tempAuctionList.addAll(auctionList)
                     recyclerView.adapter!!.notifyDataSetChanged()
@@ -130,20 +126,16 @@ class MainActivity : AppCompatActivity() {
         return super.onCreateOptionsMenu(menu)
     }
 
+    @SuppressLint("SuspiciousIndentation")
     private fun getAuctions() {
         db = FirebaseFirestore.getInstance()
 
         db.collection("auctions").get()
-            .addOnSuccessListener {
-                if(!it.isEmpty){
-                    for(data in it.documents){
-                        val auction:Auction? = data.toObject(Auction::class.java)
-                        if(auction!=null)
-                        {
-                            auctionList.add((auction))
-                        }
+            .addOnSuccessListener {documents ->
+                    for(document in documents){
+                        val data = document.toObject(Auction::class.java)
+                            auctionList.add((data))
                     }
-
                     tempAuctionList.addAll(auctionList)
 
                     val adapter = StartAuctionsAdapter(tempAuctionList)
@@ -159,12 +151,12 @@ class MainActivity : AppCompatActivity() {
                             intent.putExtra("Picture",auctionList[position].imageUrl)
                             intent.putExtra("Price",auctionList[position].startPrice)
                             intent.putExtra("Auctionid",auctionList[position].auctionid)
+                            intent.putExtra("auctionEnd",auctionList[position].auctionEnd)
                             startActivity(intent)
                         }
 
                     })
 
-                }
             }
             .addOnFailureListener{
                 Toast.makeText(this, "Failure", Toast.LENGTH_SHORT).show()
