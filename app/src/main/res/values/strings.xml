@@ -44,4 +44,6 @@
     <string name="date">Date</string>
     <string name="nickname">Nickname</string>
     <string name="choose_date">Choose date</string>
+    <string name="prompt_nick">nickname</string>
+    <string name="verify_password">Verify password</string>
 </resources>

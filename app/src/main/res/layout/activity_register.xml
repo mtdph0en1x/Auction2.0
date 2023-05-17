@@ -6,6 +6,20 @@
     android:layout_height="match_parent"
     tools:context=".Register">
 
+    <EditText
+        android:id="@+id/nickname"
+        android:layout_width="397dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="212dp"
+        android:autofillHints=""
+        android:drawableStart="@drawable/baseline_email_24"
+        android:hint="@string/nickname"
+        android:inputType="textEmailAddress"
+        android:selectAllOnFocus="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <Button
         android:id="@+id/registerButton"
         android:layout_width="wrap_content"
@@ -22,15 +36,15 @@
         android:id="@+id/email"
         android:layout_width="397dp"
         android:layout_height="48dp"
-        android:layout_marginTop="200dp"
+        android:layout_marginTop="56dp"
         android:autofillHints=""
-        android:drawableLeft="@drawable/baseline_email_24"
+        android:drawableStart="@drawable/baseline_email_24"
         android:hint="@string/prompt_email"
         android:inputType="textEmailAddress"
         android:selectAllOnFocus="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/nickname" />
 
     <EditText
         android:id="@+id/password"
@@ -38,7 +52,7 @@
         android:layout_height="49dp"
         android:layout_marginTop="8dp"
         android:autofillHints=""
-        android:drawableLeft="@drawable/baseline_lock_24"
+        android:drawableStart="@drawable/baseline_lock_24"
         android:hint="@string/prompt_password"
         android:imeActionLabel="sign in"
         android:imeOptions="actionDone"
@@ -54,8 +68,8 @@
         android:layout_height="49dp"
         android:layout_marginTop="8dp"
         android:autofillHints=""
-        android:drawableLeft="@drawable/baseline_lock_24"
-        android:hint="Verify password"
+        android:drawableStart="@drawable/baseline_lock_24"
+        android:hint="@string/verify_password"
         android:imeActionLabel="sign in"
         android:imeOptions="actionDone"
         android:inputType="textPassword"
@@ -82,14 +96,15 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
+        android:layout_marginTop="96dp"
         android:gravity="center"
         android:text="@string/register"
         android:textSize="48sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/email"
+        app:layout_constraintBottom_toTopOf="@+id/nickname"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.492"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
