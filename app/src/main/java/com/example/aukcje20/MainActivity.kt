@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -22,6 +23,7 @@ import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var recyclerView: RecyclerView
     private lateinit var auctionList: ArrayList<Auction>
     private lateinit var tempAuctionList: ArrayList<Auction>
@@ -32,6 +34,13 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+
+        // Find the RefreshLayout
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout)
+        swipeRefreshLayout.setOnRefreshListener {
+            refreshData()
+        }
 
         // Find the DrawerLayout
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
@@ -171,6 +180,18 @@ class MainActivity : AppCompatActivity() {
         } else {
             super.onSupportNavigateUp()
         }
+    }
+
+    private fun refreshData() {
+        // Clear the existing data
+        auctionList.clear()
+        tempAuctionList.clear()
+
+        // Call the function to fetch the updated data
+        getAuctions()
+
+        // Complete the refreshing animation
+        swipeRefreshLayout.isRefreshing = false
     }
 }
 
