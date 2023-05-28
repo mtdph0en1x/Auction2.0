@@ -1,8 +1,10 @@
-package com.example.aukcje20
+package com.example.aukcje20.Activities
 
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.aukcje20.DataClasses.Auction
+import com.example.aukcje20.R
 import com.google.firebase.firestore.FirebaseFirestore
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_edit_auction.*
@@ -33,7 +35,7 @@ class EditAuction : AppCompatActivity() {
                 editTextName.setText(auction.name)
                 editTextDescription.setText(auction.description)
                 editTextStartPrice.setText(auction.startPrice.toString())
-                Picasso.get().load(auction.imageUrl).into(aucPic)
+                 Picasso.get().load(auction.imageUrls.get(1)).into(aucPic)
 
                 // Set a click listener on the "Edit" button to update the auction data in Firestore
                 button_update_auction.setOnClickListener {
@@ -47,7 +49,7 @@ class EditAuction : AppCompatActivity() {
                     }
 
                     // Update the auction object with the new values
-                    updatedAuction = Auction(auction.auctionid, auction.uid, name, description, startPrice, 8.1, auction.imageUrl,auction.auctionEnd)
+                    updatedAuction = Auction(auction.auctionid, auction.uid, name, description, startPrice, 8.1, auction.imageUrls,auction.auctionEnd)
 
 
                     db.collection("auctions")

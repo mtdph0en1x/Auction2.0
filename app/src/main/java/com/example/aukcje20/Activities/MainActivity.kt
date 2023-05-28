@@ -1,4 +1,4 @@
-package com.example.aukcje20
+package com.example.aukcje20.Activities
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -12,6 +12,9 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.example.aukcje20.Adapters.StartAuctionsAdapter
+import com.example.aukcje20.DataClasses.Auction
+import com.example.aukcje20.R
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -153,11 +156,11 @@ class MainActivity : AppCompatActivity() {
 
                     adapter.setOnItemClickListener(object: StartAuctionsAdapter.onItemClickListener{
                         override fun onItemClick(position: Int) {
-                            val intent = Intent(this@MainActivity,ShowAuction::class.java)
+                            val intent = Intent(this@MainActivity, ShowAuction::class.java)
                             intent.putExtra("UId",auctionList[position].uid)
                             intent.putExtra("Name",auctionList[position].name)
                             intent.putExtra("Description",auctionList[position].description)
-                            intent.putExtra("Picture",auctionList[position].imageUrl)
+                            intent.putExtra("Picture", auctionList[position].imageUrls.get(1))
                             intent.putExtra("Price",auctionList[position].startPrice)
                             intent.putExtra("Auctionid",auctionList[position].auctionid)
                             intent.putExtra("auctionEnd",auctionList[position].auctionEnd)

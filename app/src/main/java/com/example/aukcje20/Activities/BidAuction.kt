@@ -1,4 +1,4 @@
-package com.example.aukcje20
+package com.example.aukcje20.Activities
 
 import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
@@ -8,6 +8,9 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.aukcje20.Adapters.BiddingAdapter
+import com.example.aukcje20.DataClasses.Auction
+import com.example.aukcje20.R
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -28,7 +31,7 @@ class BidAuction : AppCompatActivity() {
 
         val bundle: Bundle? = intent.extras
         val auctionId = bundle!!.getString("AuctionID")
-        val auctionEnd = bundle!!.getString("auctionEnd").toString()
+        val auctionEnd = bundle.getString("auctionEnd").toString()
 
         val docRef = db.collection("auctions").document(auctionId.toString())
 

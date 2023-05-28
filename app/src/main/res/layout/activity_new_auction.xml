@@ -68,6 +68,7 @@
                 android:textAlignment="center"
                 android:textColorHint="#8D6E63"
                 android:autofillHints="price" />
+
         </LinearLayout>
 
         <TextView
@@ -78,8 +79,8 @@
             android:textStyle="bold"
             android:layout_marginTop="16dp"/>
 
-        <ImageView
-            android:id="@+id/imageViewPhoto"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/imagesView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"

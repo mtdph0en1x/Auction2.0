@@ -1,4 +1,4 @@
-package com.example.aukcje20
+package com.example.aukcje20.Activities
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import com.example.aukcje20.R
 import com.google.firebase.auth.FirebaseAuth
 import com.squareup.picasso.Picasso
 
