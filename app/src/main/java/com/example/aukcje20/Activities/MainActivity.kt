@@ -1,8 +1,10 @@
 package com.example.aukcje20.Activities
 
 import android.annotation.SuppressLint
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
@@ -143,35 +145,36 @@ class MainActivity : AppCompatActivity() {
         db = FirebaseFirestore.getInstance()
 
         db.collection("auctions").get()
-            .addOnSuccessListener {documents ->
-                    for(document in documents){
-                        val data = document.toObject(Auction::class.java)
-                            auctionList.add((data))
+            .addOnSuccessListener { querySnapshot ->
+                val auctionList: ArrayList<Auction> = ArrayList()
+
+                for (document in querySnapshot.documents) {
+                    val data = document.toObject(Auction::class.java)
+                    auctionList.add(data!!)
+                }
+
+                val tempAuctionList: ArrayList<Auction> = ArrayList()
+                tempAuctionList.addAll(auctionList)
+
+                val adapter = StartAuctionsAdapter(tempAuctionList)
+                recyclerView.adapter = adapter
+
+                adapter.setOnItemClickListener(object : StartAuctionsAdapter.onItemClickListener {
+                    override fun onItemClick(position: Int) {
+                        val intent = Intent(this@MainActivity, ShowAuction::class.java)
+                        intent.putExtra("UId", auctionList[position].uid)
+                        intent.putExtra("Name", auctionList[position].name)
+                        intent.putExtra("Description", auctionList[position].description)
+                        intent.putExtra("Picture", auctionList[position].imageUrls[1])
+                        intent.putExtra("Price", auctionList[position].startPrice)
+                        intent.putExtra("Auctionid", auctionList[position].auctionid)
+                        intent.putExtra("auctionEnd", auctionList[position].auctionEnd)
+                        startActivity(intent)
                     }
-                    tempAuctionList.addAll(auctionList)
-
-                    val adapter = StartAuctionsAdapter(tempAuctionList)
-                    recyclerView.adapter = adapter
-
-
-                    adapter.setOnItemClickListener(object: StartAuctionsAdapter.onItemClickListener{
-                        override fun onItemClick(position: Int) {
-                            val intent = Intent(this@MainActivity, ShowAuction::class.java)
-                            intent.putExtra("UId",auctionList[position].uid)
-                            intent.putExtra("Name",auctionList[position].name)
-                            intent.putExtra("Description",auctionList[position].description)
-                            intent.putExtra("Picture", auctionList[position].imageUrls.get(1))
-                            intent.putExtra("Price",auctionList[position].startPrice)
-                            intent.putExtra("Auctionid",auctionList[position].auctionid)
-                            intent.putExtra("auctionEnd",auctionList[position].auctionEnd)
-                            startActivity(intent)
-                        }
-
-                    })
-
+                })
             }
-            .addOnFailureListener{
-                Toast.makeText(this, "Failure", Toast.LENGTH_SHORT).show()
+            .addOnFailureListener { exception ->
+                Log.e(TAG, "Error getting auctions: $exception")
             }
     }
 

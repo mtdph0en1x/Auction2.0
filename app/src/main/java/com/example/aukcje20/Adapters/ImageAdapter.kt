@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.aukcje20.R
 
 
@@ -17,15 +18,17 @@ class ImageAdapter(private val images: ArrayList<String>) : RecyclerView.Adapter
     }
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
-        val imageUri = images[position]
-        holder.bind(imageUri)
+        val imageUrl = images[position]
+        Glide.with(holder.itemView.context)
+            .load(imageUrl)
+            .into(holder.imageView)
     }
     override fun getItemCount(): Int {
         return images.size
     }
 
     inner class ImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val imageView: ImageView = itemView.findViewById(R.id.imageView)
+        val imageView: ImageView = itemView.findViewById(R.id.imageView)
 
         fun bind(imageUri: String) {
             // Bind the image to the ImageView

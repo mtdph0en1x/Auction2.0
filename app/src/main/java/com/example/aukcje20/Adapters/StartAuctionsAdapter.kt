@@ -14,6 +14,7 @@ import com.squareup.picasso.Picasso
 class StartAuctionsAdapter(private val auctionList: ArrayList<Auction>) : RecyclerView.Adapter<StartAuctionsAdapter.MyViewHolder>() {
 
     private lateinit var mListener: onItemClickListener
+
     interface onItemClickListener{
         fun onItemClick(position: Int)
     }
@@ -47,7 +48,7 @@ class StartAuctionsAdapter(private val auctionList: ArrayList<Auction>) : Recycl
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.tvName.text = auctionList[position].name
         holder.tvPrice.text = "${auctionList[position].startPrice.toString()} $"
-        Picasso.get().load(auctionList[position].imageUrls.get(1)).into(holder.tvImage)
+        Picasso.get().load(auctionList[position].imageUrls[0]).into(holder.tvImage)
     }
 }
 
