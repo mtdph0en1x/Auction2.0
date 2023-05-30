@@ -22,8 +22,8 @@ class Register : AppCompatActivity() {
     private lateinit var registerButton: Button
     private lateinit var emailR: EditText
     private lateinit var passwordR: EditText
-    private lateinit var VerifyPass: EditText
-    private lateinit var NickR: EditText
+    private lateinit var verifyPass: EditText
+    private lateinit var nickR: EditText
 
     public override fun onStart() {
         super.onStart()
@@ -39,8 +39,8 @@ class Register : AppCompatActivity() {
 
         emailR = findViewById(R.id.email)
         passwordR = findViewById(R.id.password)
-        VerifyPass = findViewById(R.id.Verifypassword)
-        NickR = findViewById(R.id.nickname)
+        verifyPass = findViewById(R.id.Verifypassword)
+        nickR = findViewById(R.id.nickname)
         registerButton = findViewById(R.id.registerButton)
 
 
@@ -52,8 +52,8 @@ class Register : AppCompatActivity() {
     private fun checkCredentials() {
         val email = emailR.text.toString()
         val password = passwordR.text.toString()
-        val nickname = NickR.text.toString()
-        val verify = VerifyPass.text.toString()
+        val nickname = nickR.text.toString()
+        val verify = verifyPass.text.toString()
 
         if(email.isEmpty() || !email.contains("@"))
         {
@@ -62,7 +62,7 @@ class Register : AppCompatActivity() {
         }
         else if(nickname.length < 6)
         {
-            NickR.error = "Too short Nickname (at least 6 letters)"
+            nickR.error = "Too short Nickname (at least 6 letters)"
             //Toast.makeText(this,"Too short Password (at least 6 letters)",Toast.LENGTH_SHORT).show()
         }
         else if(password.length < 6)
@@ -72,7 +72,7 @@ class Register : AppCompatActivity() {
         }
         else if(password != verify)
         {
-            VerifyPass.error = "Incorrect Passwords"
+            verifyPass.error = "Incorrect Passwords"
             //Toast.makeText(this,"Incorrect Passwords",Toast.LENGTH_SHORT).show()
         }
         else
@@ -87,10 +87,12 @@ class Register : AppCompatActivity() {
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     val user = auth.currentUser
-                    val UserC = User(auth.currentUser?.uid.toString(), nickname.text.toString())
+                    val userC = User(auth.currentUser?.uid.toString(), nickname.text.toString(),
+                        emptyList(),email, emptyList()
+                    )
                     db.collection("users")
                         .document(auth.currentUser?.uid.toString())
-                        .set(UserC)
+                        .set(userC)
 
                     user?.sendEmailVerification()?.addOnSuccessListener {
                         Toast.makeText(this,"Email verification sent",Toast.LENGTH_SHORT).show()

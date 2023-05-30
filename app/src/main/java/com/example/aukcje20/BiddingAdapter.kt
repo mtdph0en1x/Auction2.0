@@ -16,7 +16,7 @@ class BiddingAdapter(private val bidders: List<Map<String, Any>>) :
 
     override fun onBindViewHolder(holder: MyDataViewHolder, position: Int) {
         val myData = bidders[position]
-        holder.uidTextView.text = myData["uid"].toString()
+        holder.uidTextView.text = myData["nickname"].toString()
         holder.dataTextView.text = myData["data"].toString()
         holder.priceTextView.text = myData["price"].toString()
     }

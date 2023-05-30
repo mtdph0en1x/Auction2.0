@@ -26,7 +26,14 @@
             android:id="@+id/nav_logout"
             android:icon="@drawable/outline_view_headline_24"
             android:title="@string/logout" />
-
+        <item
+            android:id="@+id/nav_observed"
+            android:icon="@drawable/outline_view_headline_24"
+            android:title="@string/observed" />
+        <item
+            android:id="@+id/nav_notifications"
+            android:icon="@drawable/outline_view_headline_24"
+            android:title="@string/notifications" />
 
 
 

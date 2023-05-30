@@ -8,6 +8,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -28,7 +29,6 @@ class BidAuction : AppCompatActivity() {
 
         val bundle: Bundle? = intent.extras
         val auctionId = bundle!!.getString("AuctionID")
-        val auctionEnd = bundle!!.getString("auctionEnd").toString()
 
         val docRef = db.collection("auctions").document(auctionId.toString())
 
@@ -51,14 +51,21 @@ class BidAuction : AppCompatActivity() {
             val currentTime = Calendar.getInstance().time
             val dateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss",Locale.getDefault())
             val date = dateFormat.format(currentTime).orEmpty()
+            val currentDate = dateFormat.parse(date)
 
             val price = findViewById<EditText>(R.id.bidding_edittext).text.toString()
 
             docRef.get().addOnSuccessListener { document ->
                 val auction: Auction? = document.toObject(Auction::class.java)
-                val uid = auction?.uid
 
-                val docUser = db.collection("users").document(uid.toString())
+                val aucEnd = dateFormat.format(auction?.auctionEnd)
+                val dateEnd = dateFormat.parse(aucEnd)
+
+                val auth = FirebaseAuth.getInstance()
+                val currentUser = auth.currentUser
+                val userUid = currentUser?.uid.toString()
+
+                val docUser = db.collection("users").document(userUid)
 
                 docUser.get().addOnSuccessListener { documentSnapshot ->
                     if (documentSnapshot.exists()){
@@ -67,25 +74,21 @@ class BidAuction : AppCompatActivity() {
                         val priceDouble = price.toDoubleOrNull()
 
                         val newItem = hashMapOf(
-                            "uid" to username,
+                            "uid" to userUid,
+                            "nickname" to username,
                             "data" to date,
                             "price" to priceDouble
                         )
 
                         if (priceDouble != null) {
                             if(priceDouble > startPrice!! ) {
-                                if(date < auctionEnd){
-                                    docRef.update("bidders",FieldValue.arrayUnion(newItem))
-                                        .addOnSuccessListener {
-                                            //Toast.makeText(this, "WE DID IT", Toast.LENGTH_SHORT).show()
-                                        }
-                                    docRef.update("startPrice", price.toDoubleOrNull()).addOnSuccessListener {
-                                        //Toast.makeText(this, "WE DID IT AGAIN", Toast.LENGTH_SHORT).show()
+                                if (currentDate != null) {
+                                    if(currentDate.after(dateEnd) || currentDate.equals(dateEnd)){
+                                        docRef.update("bidders",FieldValue.arrayUnion(newItem))
+                                        docRef.update("startPrice", price.toDoubleOrNull())
+                                    } else {
+                                        Toast.makeText(this, "AUCTION FINISHED", Toast.LENGTH_SHORT).show()
                                     }
-                                }
-                                else
-                                {
-                                    Toast.makeText(this, "AUCTION FINISHED", Toast.LENGTH_SHORT).show()
                                 }
                             }
                             else
@@ -93,18 +96,9 @@ class BidAuction : AppCompatActivity() {
                                 Toast.makeText(this, "TOO SMALL AMOUNT", Toast.LENGTH_SHORT).show()
                             }
                         }
-
-
-                    }
-                    else
-                    {
-                        Toast.makeText(this, "DO NOT WORK USERNAME", Toast.LENGTH_SHORT).show()
                     }
                 }
-
             }
-
         }
-
     }
 }

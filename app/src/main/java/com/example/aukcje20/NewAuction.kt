@@ -122,9 +122,6 @@ class NewAuction : AppCompatActivity() {
         // create a reference to the image file and upload it to Firebase Storage
         val imageRef = storageRef.child("images/${UUID.randomUUID()}")
 
-        val dateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss")
-        val date = dateFormat.parse(dateAuction)
-        val timestamp = date.time
 
         imageRef.putFile(imageUri!!)
             .addOnSuccessListener {
@@ -142,6 +139,7 @@ class NewAuction : AppCompatActivity() {
                             buyNowPrice = buyNowPrice ?: 0.0,
                             imageUrl = uri.toString(),
                             auctionEnd = dateAuction,
+                            winnerId = "",
                             bidders = emptyList()
                         )
                     }

@@ -68,7 +68,7 @@ class Login : AppCompatActivity() {
                             startActivity(intent)
                         }
                         else{
-                            VerificationDialog()
+                            verificationDialog()
                            //Toast.makeText(this,"User's email is not verified",Toast.LENGTH_SHORT).show()
                         }
 
@@ -77,13 +77,13 @@ class Login : AppCompatActivity() {
                 }
                 else
                 {
-                    LoginErrorDialog()
+                    loginErrorDialog()
                     //Toast.makeText(this,"ERROR",Toast.LENGTH_SHORT).show()
                 }
             }
     }
 
-    private fun LoginErrorDialog() {
+    private fun loginErrorDialog() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Login Failure!")
         builder.setMessage("Make sure you have entered your email and password correctly")
@@ -95,7 +95,7 @@ class Login : AppCompatActivity() {
         alertDialog.show()
     }
 
-    private fun VerificationDialog() {
+    private fun verificationDialog() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Email Verification Failure!")
         builder.setMessage("Your email isn't verified. Please verify your email!")

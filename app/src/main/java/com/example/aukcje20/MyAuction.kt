@@ -13,6 +13,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -30,25 +31,23 @@ class MyAuction : AppCompatActivity() {
         setContentView(R.layout.activity_my_auction)
 
         recyclerView = findViewById(R.id.rvMyAuciton)
-        recyclerView.layoutManager = GridLayoutManager(this,2)
+        recyclerView.layoutManager = GridLayoutManager(this, 2)
 
         auctionList = arrayListOf()
-        tempAuctionList = arrayListOf<Auction>()
-
-
+        tempAuctionList = arrayListOf()
 
         getAuctions()
 
-
     }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
 
-        menuInflater.inflate(R.menu.search_action,menu)
+        menuInflater.inflate(R.menu.search_action, menu)
 
         val item = menu?.findItem(R.id.search)
         val searchView = item?.actionView as SearchView
 
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
                 TODO("Not yet implemented")
             }
@@ -58,15 +57,15 @@ class MyAuction : AppCompatActivity() {
 
                 tempAuctionList.clear()
                 val searchText = p0!!.lowercase(Locale.getDefault())
-                if(searchText.isNotEmpty()){
-                    auctionList.forEach{
-                        if(it.name?.lowercase(Locale.getDefault())?.contains(searchText) == true){
+                if (searchText.isNotEmpty()) {
+                    auctionList.forEach {
+                        if (it.name?.lowercase(Locale.getDefault())?.contains(searchText) == true) {
                             tempAuctionList.add(it)
                         }
                     }
                     recyclerView.adapter!!.notifyDataSetChanged()
 
-                }else{
+                } else {
 
                     tempAuctionList.clear()
                     tempAuctionList.addAll(auctionList)
@@ -80,39 +79,50 @@ class MyAuction : AppCompatActivity() {
         })
         return super.onCreateOptionsMenu(menu)
     }
+
     private fun getAuctions() {
         db = FirebaseFirestore.getInstance()
+
+        val currentTime = Calendar.getInstance().time
+        val dateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault())
+        val date = dateFormat.format(currentTime).orEmpty()
+        val currentDate = dateFormat.parse(date)
+
         auth = FirebaseAuth.getInstance()
+        val currentUserUID = auth.currentUser?.uid.toString()
 
         db.collection("auctions").get()
-            .addOnSuccessListener {
-                if(!it.isEmpty){
-                    for(data in it.documents){
-                        val auction:Auction? = data.toObject(Auction::class.java)
-                        if(auction!=null && auction.uid == auth.currentUser?.uid)
-                        {
-                            auctionList.add((auction))
-                        }
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    val data = document.toObject(Auction::class.java)
+                    val dateAuction = dateFormat.parse(data.auctionEnd)
+                    if ((dateAuction.after(currentDate) || dateAuction.equals(currentDate)) && data.uid == currentUserUID) {
+                        auctionList.add((data))
+                    }
+                }
+                tempAuctionList.addAll(auctionList)
+
+                val adapter = StartAuctionsAdapter(tempAuctionList)
+                recyclerView.adapter = adapter
+
+
+                adapter.setOnItemClickListener(object : StartAuctionsAdapter.onItemClickListener {
+                    override fun onItemClick(position: Int) {
+                        val intent = Intent(this@MyAuction, ShowAuction::class.java)
+                        intent.putExtra("UId", auctionList[position].uid)
+                        intent.putExtra("Name", auctionList[position].name)
+                        intent.putExtra("Description", auctionList[position].description)
+                        intent.putExtra("Picture", auctionList[position].imageUrl)
+                        intent.putExtra("Price", auctionList[position].startPrice)
+                        intent.putExtra("Auctionid", auctionList[position].auctionid)
+                        intent.putExtra("auctionEnd", auctionList[position].auctionEnd)
+                        startActivity(intent)
                     }
 
-                    tempAuctionList.addAll(auctionList)
-                    val adapter = StartAuctionsAdapter(tempAuctionList)
-                    recyclerView.adapter = adapter
+                })
 
-                    adapter.setOnItemClickListener(object: StartAuctionsAdapter.onItemClickListener{
-                        override fun onItemClick(position: Int) {
-                            val intent = Intent(this@MyAuction,ShowAuction::class.java)
-                            intent.putExtra("Name",auctionList[position].name)
-                            intent.putExtra("Description",auctionList[position].description)
-                            intent.putExtra("Picture",auctionList[position].imageUrl)
-                            intent.putExtra("Price",auctionList[position].startPrice)
-                            startActivity(intent)
-                        }
-                    })
-
-                }
             }
-            .addOnFailureListener{
+            .addOnFailureListener {
                 Toast.makeText(this, "Failure", Toast.LENGTH_SHORT).show()
             }
     }
