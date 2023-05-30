@@ -13,12 +13,12 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/add_a_new_auction"
+            android:text="@string/edit_auction"
             android:textSize="24sp"
             android:textStyle="bold" />
 
         <EditText
-            android:id="@+id/edit_text_name"
+            android:id="@+id/editTextName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/product_name"
@@ -28,7 +28,7 @@
             android:autofillHints="name" />
 
         <EditText
-            android:id="@+id/edit_text_description"
+            android:id="@+id/editTextDescription"
             android:layout_width="match_parent"
             android:layout_height="64dp"
             android:layout_gravity="bottom"
@@ -46,7 +46,7 @@
             android:orientation="horizontal">
 
             <EditText
-                android:id="@+id/edit_text_start_price"
+                android:id="@+id/editTextStartPrice"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -58,7 +58,7 @@
                 tools:ignore="TouchTargetSizeCheck" />
 
             <EditText
-                android:id="@+id/edit_text_buy_now_price"
+                android:id="@+id/editTextBuyNowPrice"
                 android:layout_width="0dp"
                 android:minHeight="48dp"
                 android:layout_height="wrap_content"
@@ -79,7 +79,7 @@
             android:layout_marginTop="16dp"/>
 
         <ImageView
-            android:id="@+id/imageViewPhoto"
+            android:id="@+id/aucPic"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -93,38 +93,15 @@
             android:layout_height="wrap_content"
             android:text="@string/choose_photo_s" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/button_add_date"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginTop="16dp"
-                android:text="@string/choose_date" />
-
-            <TextView
-                android:id="@+id/tv_add_photo"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_weight="1"
-                android:text="@string/date"
-                android:textAlignment="center"
-                android:textColor="@color/black"
-                android:textSize="20sp" />
-
-        </LinearLayout>
-
         <Button
-            android:id="@+id/button_create_auction"
+            android:id="@+id/button_update_auction"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="@string/create_auction" />
+            android:text="@string/update" />
+
+
+
 
     </LinearLayout>
 </ScrollView>

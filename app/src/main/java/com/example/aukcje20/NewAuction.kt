@@ -3,14 +3,18 @@
 package com.example.aukcje20
 
 
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.widget.DatePicker
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.aukcje20.databinding.ActivityNewAuctionBinding
 import com.google.firebase.auth.FirebaseAuth
-
+import java.util.Calendar
+import java.text.SimpleDateFormat
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
@@ -36,7 +40,6 @@ class NewAuction : AppCompatActivity() {
         // get a reference to the Firebase Authentication instance
         auth = FirebaseAuth.getInstance()
 
-
         // get references to the views
         val nameEditText = binding.editTextName
         val descriptionEditText = binding.editTextDescription
@@ -44,15 +47,58 @@ class NewAuction : AppCompatActivity() {
         val buyNowPriceEditText = binding.editTextBuyNowPrice
         val addPhotoButton = binding.buttonAddPhoto
         val createAuctionButton = binding.buttonCreateAuction
+        val addDateButton = binding.buttonAddDate
+        val photoText = binding.tvAddPhoto
 
         // set up click listeners for the buttons
         addPhotoButton.setOnClickListener { openFileChooser() }
-        createAuctionButton.setOnClickListener { createAuction(
-            nameEditText.text.toString().trim(),
-            descriptionEditText.text.toString().trim(),
-            startPriceEditText.text.toString().toDoubleOrNull(),
-            buyNowPriceEditText.text.toString().toDoubleOrNull()
-        ) }
+
+        val myCalendar = Calendar.getInstance()
+
+
+        val datePicker = DatePickerDialog.OnDateSetListener { datePicker: DatePicker, year, month, dayOfMonth ->
+            myCalendar.set(Calendar.YEAR, year)
+            myCalendar.set(Calendar.MONTH, month)
+            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+
+            val timePicker = TimePickerDialog(this,
+                TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
+                    myCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
+                    myCalendar.set(Calendar.MINUTE, minute)
+                    myCalendar.set(Calendar.SECOND, 0) // Set seconds to 0 or change as needed
+
+                    val myFormat = "dd-MM-yyyy HH:mm:ss" // Format pattern including date and time
+                    val sdf = SimpleDateFormat(myFormat, Locale.getDefault())
+                    photoText.text = sdf.format(myCalendar.time)
+                },
+                0,
+                0,
+                true
+            )
+            timePicker.show()
+        }
+
+
+        addDateButton.setOnClickListener{
+            DatePickerDialog(this,datePicker,
+                myCalendar.get(Calendar.YEAR),
+                myCalendar.get(Calendar.MONTH),
+                myCalendar.get(Calendar.DAY_OF_MONTH),)
+                .show()
+        }
+
+
+        createAuctionButton.setOnClickListener {
+            createAuction(
+                UUID.randomUUID().toString().trim(),
+                auth.currentUser?.uid.toString().trim(),
+                nameEditText.text.toString().trim(),
+                descriptionEditText.text.toString().trim(),
+                startPriceEditText.text.toString().toDoubleOrNull(),
+                buyNowPriceEditText.text.toString().toDoubleOrNull(),
+                photoText.text.toString()
+            )
+        }
     }
 
     private fun openFileChooser() {
@@ -62,7 +108,7 @@ class NewAuction : AppCompatActivity() {
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST)
     }
 
-    private fun createAuction(name: String, description: String, startPrice: Double?, buyNowPrice: Double?) {
+    private fun createAuction(auctionid: String, uid: String, name: String, description: String, startPrice: Double?, buyNowPrice: Double?,dateAuction: String) {
         if (imageUri == null) {
             Toast.makeText(this, "Please add a photo", Toast.LENGTH_SHORT).show()
             return
@@ -72,33 +118,48 @@ class NewAuction : AppCompatActivity() {
         val storage = Firebase.storage
         val storageRef = storage.reference
 
+
         // create a reference to the image file and upload it to Firebase Storage
         val imageRef = storageRef.child("images/${UUID.randomUUID()}")
+
+
         imageRef.putFile(imageUri!!)
             .addOnSuccessListener {
                 // get the download URL for the image
                 imageRef.downloadUrl.addOnSuccessListener { uri ->
                     // create a new auction object
 
-                    val auction = Auction(
-                        name = name,
-                        description = description,
-                        startPrice = startPrice ?: 0.0,
-                        buyNowPrice = buyNowPrice ?: 0.0,
-                        imageUrl = uri.toString()
-                    )
+                    val auction = auth.currentUser?.let {
+                        Auction(
+                            auctionid = auctionid,
+                            uid = uid,
+                            name = name,
+                            description = description,
+                            startPrice = startPrice ?: 0.0,
+                            buyNowPrice = buyNowPrice ?: 0.0,
+                            imageUrl = uri.toString(),
+                            auctionEnd = dateAuction,
+                            winnerId = "",
+                            bidders = emptyList()
+                        )
+                    }
 
                     // add the new auction to the Firebase Firestore database
                     val db = Firebase.firestore
-                    db.collection("auctions")
-                        .add(auction)
-                        .addOnSuccessListener {
-                            Toast.makeText(this, "Auction created successfully", Toast.LENGTH_SHORT).show()
-                            finish()
-                        }
-                        .addOnFailureListener { e ->
-                            Toast.makeText(this, "Error creating auction: ${e.message}", Toast.LENGTH_SHORT).show()
-                        }
+
+                    if (auction != null) {
+                        db.collection("auctions").document(auctionid)
+                            .set(auction)
+                            .addOnSuccessListener {
+                                Toast.makeText(this, "Auction created successfully", Toast.LENGTH_SHORT).show()
+                                finish()
+                                val intent = Intent(this, MainActivity::class.java)
+                                startActivity(intent)
+                            }
+                            .addOnFailureListener { e ->
+                                Toast.makeText(this, "Error creating auction: ${e.message}", Toast.LENGTH_SHORT).show()
+                            }
+                    }
                 }
             }
             .addOnFailureListener { e ->

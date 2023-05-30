@@ -2,12 +2,12 @@
 package com.example.aukcje20
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -40,7 +40,18 @@ class Login : AppCompatActivity() {
             val email = emailL.text.toString()
             val password = passwordL.text.toString()
 
-            loginUser(email, password)
+            if(email.isEmpty() || !email.contains("@"))
+            {
+                emailL.error = "Enter correct email"
+            }
+            else if(password.length < 6)
+            {
+                passwordL.error = "Too short Password (at least 6 letters)"
+            }
+            else
+            {
+                loginUser(email, password)
+            }
         }
     }
 
@@ -50,17 +61,49 @@ class Login : AppCompatActivity() {
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     val user = auth.currentUser
-                    val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent)
 
-                } else {
-                    // If sign in fails, display a message to the user.
-                    Toast.makeText(
-                        baseContext, "Authentication failed.",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    if (user != null) {
+                        if (user.isEmailVerified) {
+                            val intent = Intent(this, MainActivity::class.java)
+                            startActivity(intent)
+                        }
+                        else{
+                            verificationDialog()
+                           //Toast.makeText(this,"User's email is not verified",Toast.LENGTH_SHORT).show()
+                        }
 
+
+                    }
+                }
+                else
+                {
+                    loginErrorDialog()
+                    //Toast.makeText(this,"ERROR",Toast.LENGTH_SHORT).show()
                 }
             }
+    }
+
+    private fun loginErrorDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Login Failure!")
+        builder.setMessage("Make sure you have entered your email and password correctly")
+        builder.setCancelable(false)
+        builder.setPositiveButton("OK") {
+                dialog, _ -> dialog.cancel()
+        }
+        val alertDialog = builder.create()
+        alertDialog.show()
+    }
+
+    private fun verificationDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Email Verification Failure!")
+        builder.setMessage("Your email isn't verified. Please verify your email!")
+        builder.setCancelable(false)
+        builder.setPositiveButton("OK") {
+                dialog, _ -> dialog.cancel()
+        }
+        val alertDialog = builder.create()
+        alertDialog.show()
     }
 }

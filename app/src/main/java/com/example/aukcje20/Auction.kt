@@ -1,9 +1,15 @@
 package com.example.aukcje20
 
 data class Auction(
-    val name: String,
-    val description: String,
-    val startPrice: Double,
-    val buyNowPrice: Double,
-    val imageUrl: String
-)
+    val auctionid: String? = null,
+    val uid: String? = null,
+    var name: String? = null,
+    var description: String? = null,
+    var startPrice: Double? = null,
+    var buyNowPrice: Double? = null,
+    var imageUrl: String? = null,
+    var auctionEnd: String? = null,
+    var winnerId: String? = null,
+    var isDuplicated: Boolean? = false,
+    val bidders: List<Map<String, Any>> = emptyList()
+    )
