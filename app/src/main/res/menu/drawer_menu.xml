@@ -29,7 +29,7 @@
         <item
             android:id="@+id/nav_observed"
             android:icon="@drawable/outline_view_headline_24"
-            android:title="@string/observed" />
+            android:title="@string/observe" />
         <item
             android:id="@+id/nav_notifications"
             android:icon="@drawable/outline_view_headline_24"

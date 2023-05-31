@@ -1,4 +1,4 @@
-package com.example.aukcje20
+package com.example.aukcje20.DataClasses
 
 data class Auction(
     val auctionid: String? = null,
@@ -7,9 +7,10 @@ data class Auction(
     var description: String? = null,
     var startPrice: Double? = null,
     var buyNowPrice: Double? = null,
-    var imageUrl: String? = null,
+    var imageUrls: List<String> = ArrayList(6),
     var auctionEnd: String? = null,
     var winnerId: String? = null,
-    var isDuplicated: Boolean? = false,
+    var duplication: Boolean? = false,
     val bidders: List<Map<String, Any>> = emptyList()
-    )
+)
+

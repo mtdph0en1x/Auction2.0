@@ -15,52 +15,47 @@
         android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
         tools:targetApi="31">
         <activity
-            android:name=".Profile"
-            android:exported="false" />
-        <activity
-            android:name=".NotificationShow"
+            android:name=".NotifiactionShow"
             android:exported="false" />
         <activity
             android:name=".Notifications"
             android:exported="false" />
         <activity
             android:name=".ObservedAuction"
-            android:exported="false"
-            android:label="@string/title_activity_observed_auction"
-            android:theme="@style/NoActionBar" />
+            android:exported="false" />
         <activity
-            android:name=".BidAuction"
+            android:name=".Activities.BidAuction"
             android:exported="false"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".EditAuction"
+            android:name=".Activities.EditAuction"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".MyAuction"
+            android:name=".Activities.MyAuction"
             android:exported="false" />
         <activity
-            android:name=".ShowAuction"
+            android:name=".Activities.ShowAuction"
             android:exported="false" />
         <activity
-            android:name=".NewAuction"
+            android:name=".Activities.NewAuction"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".Register"
+            android:name=".Activities.Register"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".Login"
+            android:name=".Activities.Login"
             android:exported="true"
             android:theme="@style/Theme.Material3.Light.NoActionBar">
             <intent-filter>
@@ -74,7 +69,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".Activities.MainActivity"
             android:exported="true">
             <meta-data
                 android:name="android.app.lib_name"

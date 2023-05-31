@@ -1,4 +1,4 @@
-package com.example.aukcje20
+package com.example.aukcje20.Adapters
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
@@ -7,11 +7,14 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.aukcje20.DataClasses.Auction
+import com.example.aukcje20.R
 import com.squareup.picasso.Picasso
 
 class StartAuctionsAdapter(private val auctionList: ArrayList<Auction>) : RecyclerView.Adapter<StartAuctionsAdapter.MyViewHolder>() {
 
     private lateinit var mListener: onItemClickListener
+
     interface onItemClickListener{
         fun onItemClick(position: Int)
     }
@@ -45,9 +48,7 @@ class StartAuctionsAdapter(private val auctionList: ArrayList<Auction>) : Recycl
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.tvName.text = auctionList[position].name
         holder.tvPrice.text = "${auctionList[position].startPrice.toString()} $"
-        if (!auctionList[position].imageUrl.isNullOrEmpty()) {
-            Picasso.get().load(auctionList[position].imageUrl).into(holder.tvImage)
-        }
+        Picasso.get().load(auctionList[position].imageUrls[0]).into(holder.tvImage)
     }
 }
 
