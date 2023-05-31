@@ -89,7 +89,9 @@ class Register : AppCompatActivity() {
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     val user = auth.currentUser
-                    val UserC = User(auth.currentUser?.uid.toString(), nickname.text.toString())
+                    val UserC = User(auth.currentUser?.uid.toString(), nickname.text.toString(),
+                        emptyList(),email, emptyList()
+                    )
                     db.collection("users")
                         .document(auth.currentUser?.uid.toString())
                         .set(UserC)

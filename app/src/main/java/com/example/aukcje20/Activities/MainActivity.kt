@@ -6,7 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
-import android.widget.Toast
+import android.view.MenuItem
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -19,10 +19,12 @@ import com.example.aukcje20.DataClasses.Auction
 import com.example.aukcje20.R
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_main.*
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -92,6 +94,16 @@ class MainActivity : AppCompatActivity() {
                     startActivity(intent)
                     true
                 }
+                R.id.nav_observed -> {
+                    val intent = Intent(this, ObservedAuction::class.java)
+                    startActivity(intent)
+                    true
+                }
+                R.id.nav_notifications ->{
+                    val intent = Intent(this, Notifications::class.java)
+                    startActivity(intent)
+                    true
+                }
                 else -> false
             }
         }
@@ -106,8 +118,12 @@ class MainActivity : AppCompatActivity() {
 
         menuInflater.inflate(R.menu.search_action,menu)
 
-        val item = menu?.findItem(R.id.search)
-        val searchView = item?.actionView as SearchView
+        val itemSearch = menu?.findItem(R.id.search)
+        val searchView = itemSearch?.actionView as SearchView
+
+        val actionBar = supportActionBar
+        actionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = "Main menu"
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(p0: String?): Boolean {
@@ -144,13 +160,95 @@ class MainActivity : AppCompatActivity() {
     private fun getAuctions() {
         db = FirebaseFirestore.getInstance()
 
+        val currentTime = Calendar.getInstance().time
+        val dateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss",Locale.getDefault())
+        val date = dateFormat.format(currentTime).orEmpty()
+        val currentDate = dateFormat.parse(date)
+
         db.collection("auctions").get()
             .addOnSuccessListener { querySnapshot ->
                 val auctionList: ArrayList<Auction> = ArrayList()
-
                 for (document in querySnapshot.documents) {
                     val data = document.toObject(Auction::class.java)
-                    auctionList.add(data!!)
+                    if (data != null)
+                    {
+                        val dateAuction = dateFormat.parse(data.auctionEnd.toString())
+                        if (dateAuction != null) {
+                            if(dateAuction.after(currentDate) || dateAuction.equals(currentDate)) {
+                                auctionList.add((data))
+                            } else {
+                                if(!data.duplication!!) {
+                                    data.duplication = true
+                                    db.collection("auctions").document(data.auctionid.toString()).update("duplication",data.duplication)
+                                    if (data.bidders.isNotEmpty()) {
+                                        val arrayLast = data.bidders.last()
+                                        data.winnerId = arrayLast["uid"] as String?
+                                        db.collection("auctions").document(data.auctionid.toString()).update("winnerId",data.winnerId)
+
+                                        db.collection("users").document(data.winnerId.toString()).get().addOnSuccessListener {
+                                            val notificationID = UUID.randomUUID().toString().trim()
+                                            val headerText = "You've won an auction: ${data.name}!"
+                                            val infoText = "Welcome! \n" +
+                                                    "We are happy to inform you that you've won an auction ${data.name} for ${data.startPrice}$." +
+                                                    "We would like you to inform that you have to send an correct price on our bank account: PL20109024026388698431595484\n" +
+                                                    "Auction2.0"
+                                            val isChecked = false
+                                            val newItem = hashMapOf(
+                                                "id" to notificationID,
+                                                "header" to headerText,
+                                                "information" to infoText,
+                                                "isChecked" to isChecked
+                                            )
+                                            db.collection("users").document(data.winnerId.toString()).update("notifications", FieldValue.arrayUnion(newItem))
+
+                                        }
+
+                                        db.collection("users").document(data.uid.toString()).get().addOnSuccessListener {
+                                            val winnerNickname = arrayLast["nickname"] as String?
+
+                                            val notificationID = UUID.randomUUID().toString().trim()
+                                            val headerText = "Your auction has ended"
+                                            val infoText = "Welcome! \n" +
+                                                    "We are happy to inform you that your auction ${data.name} has ended!" +
+                                                    "The highest bid goes to $winnerNickname for ${data.startPrice}$!\n" +
+                                                    "Auction2.0"
+                                            val isChecked = false
+                                            val newItem = hashMapOf(
+                                                "id" to notificationID,
+                                                "header" to headerText,
+                                                "information" to infoText,
+                                                "isChecked" to isChecked
+                                            )
+                                            db.collection("users").document(data.uid.toString()).update("notifications", FieldValue.arrayUnion(newItem))
+                                        }
+
+
+                                    } else {
+                                        db.collection("users").document(data.uid.toString()).get().addOnSuccessListener {
+
+                                            val notificationID = UUID.randomUUID().toString().trim()
+                                            val headerText = "Your auction has ended"
+                                            val infoText = "Welcome! \n" +
+                                                    "We are sorry to inform you that your auction ${data.name} has ended without any bid"
+                                            val isChecked = false
+                                            val newItem = hashMapOf(
+                                                "id" to notificationID,
+                                                "header" to headerText,
+                                                "information" to infoText,
+                                                "isChecked" to isChecked
+                                            )
+                                            db.collection("users").document(data.uid.toString())
+                                                .update("notifications", FieldValue.arrayUnion(newItem))
+                                        }
+                                    }
+
+                                }
+
+                            }
+                        }
+                    }
+
+
                 }
 
                 val tempAuctionList: ArrayList<Auction> = ArrayList()
@@ -176,6 +274,18 @@ class MainActivity : AppCompatActivity() {
             .addOnFailureListener { exception ->
                 Log.e(TAG, "Error getting auctions: $exception")
             }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
+        val toggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close)
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+
+        if (toggle.onOptionsItemSelected(item)) {
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onSupportNavigateUp(): Boolean {

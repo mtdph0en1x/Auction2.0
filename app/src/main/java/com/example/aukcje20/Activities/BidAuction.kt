@@ -31,7 +31,6 @@ class BidAuction : AppCompatActivity() {
 
         val bundle: Bundle? = intent.extras
         val auctionId = bundle!!.getString("AuctionID")
-        val auctionEnd = bundle.getString("auctionEnd").toString()
 
         val docRef = db.collection("auctions").document(auctionId.toString())
 
@@ -54,12 +53,14 @@ class BidAuction : AppCompatActivity() {
             val currentTime = Calendar.getInstance().time
             val dateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss",Locale.getDefault())
             val date = dateFormat.format(currentTime).orEmpty()
+            val currentDate = dateFormat.parse(date)
 
             val price = findViewById<EditText>(R.id.bidding_edittext).text.toString()
 
             docRef.get().addOnSuccessListener { document ->
                 val auction: Auction? = document.toObject(Auction::class.java)
                 val uid = auction?.uid
+                val dateAuction = dateFormat.parse(auction?.auctionEnd.toString())
 
                 val docUser = db.collection("users").document(uid.toString())
 
@@ -77,7 +78,7 @@ class BidAuction : AppCompatActivity() {
 
                         if (priceDouble != null) {
                             if(priceDouble > startPrice!! ) {
-                                if(date < auctionEnd){
+                                if(currentDate < dateAuction){
                                     docRef.update("bidders",FieldValue.arrayUnion(newItem))
                                         .addOnSuccessListener {
                                             //Toast.makeText(this, "WE DID IT", Toast.LENGTH_SHORT).show()
@@ -96,8 +97,6 @@ class BidAuction : AppCompatActivity() {
                                 Toast.makeText(this, "TOO SMALL AMOUNT", Toast.LENGTH_SHORT).show()
                             }
                         }
-
-
                     }
                     else
                     {

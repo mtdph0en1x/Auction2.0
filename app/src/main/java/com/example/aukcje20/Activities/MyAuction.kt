@@ -16,6 +16,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -37,8 +38,6 @@ class MyAuction : AppCompatActivity() {
 
         auctionList = arrayListOf()
         tempAuctionList = arrayListOf<Auction>()
-
-
 
         getAuctions()
 
@@ -87,14 +86,21 @@ class MyAuction : AppCompatActivity() {
         db = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
 
+        val currentTime = Calendar.getInstance().time
+        val dateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss",Locale.getDefault())
+        val date = dateFormat.format(currentTime).orEmpty()
+        val currentDate = dateFormat.parse(date)
+
         db.collection("auctions").get()
             .addOnSuccessListener {
                 if(!it.isEmpty){
                     for(data in it.documents){
                         val auction: Auction? = data.toObject(Auction::class.java)
-                        if(auction!=null && auction.uid == auth.currentUser?.uid)
-                        {
-                            auctionList.add((auction))
+                        val dateAuction = dateFormat.parse(auction?.auctionEnd.toString())
+                        if (dateAuction != null) {
+                            if(auction!=null && (dateAuction.after(currentDate) || dateAuction.equals(currentDate)) && auction.uid == auth.currentUser?.uid) {
+                                auctionList.add((auction))
+                            }
                         }
                     }
 
@@ -109,6 +115,7 @@ class MyAuction : AppCompatActivity() {
                             intent.putExtra("Description",auctionList[position].description)
                             intent.putExtra("Picture", auctionList[position].imageUrls.get(1))
                             intent.putExtra("Price",auctionList[position].startPrice)
+                            intent.putExtra("Auctionid",auctionList[position].auctionid)
                             startActivity(intent)
                         }
                     })

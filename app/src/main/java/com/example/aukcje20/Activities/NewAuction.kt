@@ -180,7 +180,8 @@ class NewAuction : AppCompatActivity() {
             buyNowPrice,
             imageUriList,
             auctionEnd,
-
+            duplication = false,
+            winnerId = ""
         )
 
         // Upload images to Firebase Storage

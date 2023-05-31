@@ -9,6 +9,8 @@ data class Auction(
     var buyNowPrice: Double? = null,
     var imageUrls: List<String> = ArrayList(6),
     var auctionEnd: String? = null,
+    var winnerId: String? = null,
+    var duplication: Boolean? = false,
     val bidders: List<Map<String, Any>> = emptyList()
 )
 
