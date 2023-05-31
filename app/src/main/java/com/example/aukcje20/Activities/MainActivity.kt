@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
 
         auth = FirebaseAuth.getInstance()
 
-        recyclerView = findViewById(R.id.recyclerView)
+        recyclerView = findViewById(R.id.rv_main)
         recyclerView.layoutManager = GridLayoutManager(this, 2)
 
         //Initialization of list of Auctions

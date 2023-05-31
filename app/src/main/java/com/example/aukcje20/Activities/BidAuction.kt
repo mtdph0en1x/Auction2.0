@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.aukcje20.Adapters.BiddingAdapter
 import com.example.aukcje20.DataClasses.Auction
 import com.example.aukcje20.R
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -23,6 +24,7 @@ class BidAuction : AppCompatActivity() {
 
     private val db = Firebase.firestore
     private lateinit var bidSubmit: Button
+    private lateinit var auth: FirebaseAuth
 
     @SuppressLint("SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,10 +61,11 @@ class BidAuction : AppCompatActivity() {
 
             docRef.get().addOnSuccessListener { document ->
                 val auction: Auction? = document.toObject(Auction::class.java)
-                val uid = auction?.uid
+                val currentUser = FirebaseAuth.getInstance().currentUser
+                val userUID = currentUser?.uid.toString()
                 val dateAuction = dateFormat.parse(auction?.auctionEnd.toString())
 
-                val docUser = db.collection("users").document(uid.toString())
+                val docUser = db.collection("users").document(userUID)
 
                 docUser.get().addOnSuccessListener { documentSnapshot ->
                     if (documentSnapshot.exists()){
@@ -71,7 +74,7 @@ class BidAuction : AppCompatActivity() {
                         val priceDouble = price.toDoubleOrNull()
 
                         val newItem = hashMapOf(
-                            "uid" to username,
+                            "nickname" to username,
                             "data" to date,
                             "price" to priceDouble
                         )
