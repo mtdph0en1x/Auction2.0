@@ -77,7 +77,8 @@ class NewAuction : AppCompatActivity() {
                     true
                 }
                 R.id.nav_profile -> {
-                    // Handle Profile
+                    val intent = Intent(this, Profile::class.java)
+                    startActivity(intent)
                     true
                 }
                 R.id.nav_settings -> {

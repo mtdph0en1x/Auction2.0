@@ -50,4 +50,17 @@
     <string name="notifications">notifications</string>
     <string name="your_notification">your_notification</string>
     <string name="textview">TextView</string>
+    <string name="change_email">Change email</string>
+    <string name="change_password">Change password</string>
+    <string name="edit_your_profile">Edit your profile</string>
+    <string name="your_email">your_email</string>
+    <string name="email">email:</string>
+    <string name="your_nickname">your_nickname</string>
+    <string name="nickname2">nickname:</string>
+    <string name="profile_description">Profile description:</string>
+    <string name="edit_your_password">Edit your password</string>
+    <string name="edit_your_email">Edit your email</string>
+    <string name="e_mail">E-mail</string>
+    <string name="email_">Email</string>
+    <string name="change_your_profile">Change your profile</string>
 </resources>

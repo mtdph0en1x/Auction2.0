@@ -11,8 +11,8 @@ import com.example.aukcje20.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import kotlinx.android.synthetic.main.activity_register.*
 
 
 class Register : AppCompatActivity() {
@@ -57,44 +57,66 @@ class Register : AppCompatActivity() {
         val nickname = NickR.text.toString()
         val verify = VerifyPass.text.toString()
 
-        if(email.isEmpty() || !email.contains("@"))
-        {
-            emailR.error = "Enter correct email"
-            //Toast.makeText(this,"Wrong Email",Toast.LENGTH_SHORT).show()
-        }
-        else if(nickname.length < 6)
-        {
-            NickR.error = "Too short Nickname (at least 6 letters)"
-            //Toast.makeText(this,"Too short Password (at least 6 letters)",Toast.LENGTH_SHORT).show()
-        }
-        else if(password.length < 6)
-        {
-            passwordR.error = "Too short Password (at least 6 letters)"
-            //Toast.makeText(this,"Too short Password (at least 6 letters)",Toast.LENGTH_SHORT).show()
-        }
-        else if(password != verify)
-        {
-            VerifyPass.error = "Incorrect Passwords"
-            //Toast.makeText(this,"Incorrect Passwords",Toast.LENGTH_SHORT).show()
-        }
-        else
-        {
-            registerUser(email, password)
-        }
+        val db = Firebase.firestore
+        val docRef = db.collection("nicknames").document(nickname)
+
+        docRef.get()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val document = task.result
+                    if (document != null && document.exists()) {
+                        // The document exists in the collection
+                        NickR.error = "Nick already exist"
+                        // Perform your desired operations here
+                    } else {
+                        if(email.isEmpty() || !email.contains("@"))
+                        {
+                            emailR.error = "Enter correct email"
+                            //Toast.makeText(this,"Wrong Email",Toast.LENGTH_SHORT).show()
+                        }
+                        else if(nickname.length < 6)
+                        {
+                            NickR.error = "Too short Nickname (at least 6 letters)"
+                            //Toast.makeText(this,"Too short Password (at least 6 letters)",Toast.LENGTH_SHORT).show()
+                        }
+                        else if(password.length < 6)
+                        {
+                            passwordR.error = "Too short Password (at least 6 letters)"
+                            //Toast.makeText(this,"Too short Password (at least 6 letters)",Toast.LENGTH_SHORT).show()
+                        }
+                        else if(password != verify)
+                        {
+                            VerifyPass.error = "Incorrect Passwords"
+                            //Toast.makeText(this,"Incorrect Passwords",Toast.LENGTH_SHORT).show()
+                        }
+                        else
+                        {
+                            registerUser(email, password,nickname)
+                        }
+                    }
+                } else {
+                    // An error occurred while retrieving the document
+                    val exception = task.exception
+                    // Handle the error accordingly
+                }
+            }
+
     }
 
-    private fun registerUser(email: String, password: String) {
+    private fun registerUser(email: String, password: String, nickname: String) {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     val user = auth.currentUser
-                    val UserC = User(auth.currentUser?.uid.toString(), nickname.text.toString(),
+                    val UserC = User(auth.currentUser?.uid.toString(), nickname,
                         emptyList(),email, emptyList()
                     )
+                    val NickC = com.example.aukcje20.DataClasses.Nickname(auth.currentUser?.uid.toString())
                     db.collection("users")
                         .document(auth.currentUser?.uid.toString())
                         .set(UserC)
+                    db.collection("nicknames").document(nickname).set(NickC)
 
                     user?.sendEmailVerification()?.addOnSuccessListener {
                         Toast.makeText(this,"Email verification sent",Toast.LENGTH_SHORT).show()

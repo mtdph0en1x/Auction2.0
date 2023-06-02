@@ -15,6 +15,12 @@
         android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
         tools:targetApi="31">
         <activity
+            android:name=".Activities.EditProfile"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.Profile"
+            android:exported="false" />
+        <activity
             android:name=".Activities.NotificationShow"
             android:exported="false" />
         <activity

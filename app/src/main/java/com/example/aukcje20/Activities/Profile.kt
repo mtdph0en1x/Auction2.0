@@ -4,31 +4,35 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
-import android.widget.ImageButton
+import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.drawerlayout.widget.DrawerLayout
+import com.example.aukcje20.DataClasses.User
 import com.example.aukcje20.R
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
-class NotificationShow : AppCompatActivity() {
-    private lateinit var tvInformation: TextView
-    private lateinit var tvHeader: TextView
-    private lateinit var notificationGoBack: ImageButton
+class Profile : AppCompatActivity() {
+    private lateinit var profNickname: TextView
+    private lateinit var profEmail: TextView
+    private lateinit var profButton: Button
+
+    private val db = Firebase.firestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_notifiaction_show)
+        setContentView(R.layout.activity_profile)
 
-        val text = intent.getStringExtra("Text")
-        val header = intent.getStringExtra("Header")
+        profEmail = findViewById(R.id.tv_email_show)
+        profNickname = findViewById(R.id.tv_nickname_show)
+        profButton = findViewById(R.id.btn_edit_profile)
 
-        tvInformation = findViewById(R.id.tv_notificationShow_information)
-        tvHeader = findViewById(R.id.tv_notification_upper_text)
-        notificationGoBack = findViewById(R.id.notificationShow_gobackbtn)
-
-        tvInformation.text = text
-        tvHeader.text = header
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        val userUID = currentUser?.uid.toString()
+        val userEmail = currentUser?.email.toString()
 
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
@@ -80,13 +84,24 @@ class NotificationShow : AppCompatActivity() {
 
         val actionBar = supportActionBar
         actionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = "Notification"
+        supportActionBar?.title = "Your profile"
 
-        notificationGoBack.setOnClickListener {
-            this.finish()
+
+        val docRef = db.collection("users").document(userUID)
+
+        docRef.get().addOnSuccessListener {document ->
+            val user: User? = document.toObject(User::class.java)
+            profNickname.text = user?.nickname.toString()
+            profEmail.text = userEmail
+        }
+
+        profButton.setOnClickListener{
+            val intent = Intent(this, EditProfile::class.java)
+            startActivity(intent)
         }
 
     }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val toggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close)
