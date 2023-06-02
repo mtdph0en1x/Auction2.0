@@ -73,7 +73,8 @@ class MainActivity : AppCompatActivity() {
         navView.setNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.nav_home -> {
-                    // Handle Home
+                    val intent = Intent(this, MainActivity::class.java)
+                    startActivity(intent)
                     true
                 }
                 R.id.nav_profile -> {
@@ -183,7 +184,7 @@ class MainActivity : AppCompatActivity() {
                                     if (data.bidders.isNotEmpty()) {
                                         val arrayLast = data.bidders.last()
                                         data.winnerId = arrayLast["uid"] as String?
-                                        db.collection("auctions").document(data.auctionid.toString()).update("winnerId",data.winnerId)
+                                        db.collection("auctions").document(data.auctionid.toString()).update("winnerId",data.winnerId.toString())
 
                                         db.collection("users").document(data.winnerId.toString()).get().addOnSuccessListener {
                                             val notificationID = UUID.randomUUID().toString().trim()

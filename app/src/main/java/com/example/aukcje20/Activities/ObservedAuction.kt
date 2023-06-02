@@ -5,7 +5,9 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.aukcje20.Adapters.StartAuctionsAdapter
@@ -19,6 +21,10 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 import androidx.appcompat.widget.SearchView
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.navigation.NavigationView
+
 class ObservedAuction : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
@@ -26,7 +32,7 @@ class ObservedAuction : AppCompatActivity() {
     private lateinit var tempAuctionList: ArrayList<Auction>
     private var db = Firebase.firestore
     private lateinit var auth: FirebaseAuth
-
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,9 +44,77 @@ class ObservedAuction : AppCompatActivity() {
         auctionList = arrayListOf()
         tempAuctionList = arrayListOf()
 
+        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
+        val navView: NavigationView = findViewById(R.id.nav_view)
+
+        navView.setNavigationItemSelectedListener {
+            when (it.itemId) {
+                R.id.nav_home -> {
+                    val intent = Intent(this, MainActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                R.id.nav_profile -> {
+                    // Handle Profile
+                    true
+                }
+                R.id.nav_settings -> {
+                    // Handle Settings
+                    true
+                }
+                R.id.nav_new_auction -> {
+                    val intent = Intent(this, NewAuction::class.java)
+                    startActivity(intent)
+                    true
+                }
+                R.id.nav_my_auction -> {
+                    val intent = Intent(this, MyAuction::class.java)
+                    startActivity(intent)
+                    true
+                }
+                R.id.nav_observed -> {
+                    val intent = Intent(this, ObservedAuction::class.java)
+                    startActivity(intent)
+                    true
+                }
+                R.id.nav_notifications ->{
+                    val intent = Intent(this, Notifications::class.java)
+                    startActivity(intent)
+                    true
+                }
+                else -> false
+            }
+        }
+
+        val toggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close)
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+
+
+        val actionBar = supportActionBar
+        actionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = "Observed auctions"
+
         getAuctions()
 
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout)
+        swipeRefreshLayout.setOnRefreshListener {
+            refreshData()
+        }
+
     }
+
+    private fun refreshData() {
+        auctionList.clear()
+        tempAuctionList.clear()
+
+        // Call the function to fetch the updated data
+        getAuctions()
+
+        // Complete the refreshing animation
+        swipeRefreshLayout.isRefreshing = false
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
 
         menuInflater.inflate(R.menu.search_action,menu)
@@ -147,4 +221,28 @@ class ObservedAuction : AppCompatActivity() {
             }
         }
     }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
+        val toggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close)
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+
+        if (toggle.onOptionsItemSelected(item)) {
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+
+
+    override fun onSupportNavigateUp(): Boolean {
+        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
+        return if (drawerLayout.isDrawerOpen(findViewById(R.id.nav_view))) {
+            drawerLayout.closeDrawer(findViewById(R.id.nav_view))
+            true
+        } else {
+            super.onSupportNavigateUp()
+        }
+    }
+
 }
