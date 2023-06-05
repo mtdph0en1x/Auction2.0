@@ -33,6 +33,7 @@ class BidAuction : AppCompatActivity() {
     private lateinit var bidSubmit: Button
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var aucGoBack: ImageButton
+    private lateinit var auth: FirebaseAuth
     @SuppressLint("SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +49,7 @@ class BidAuction : AppCompatActivity() {
         actionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = "Main menu"
 
+        auth = FirebaseAuth.getInstance()
 
         navView.setNavigationItemSelectedListener {
             when (it.itemId) {
@@ -59,10 +61,6 @@ class BidAuction : AppCompatActivity() {
                 R.id.nav_profile -> {
                     val intent = Intent(this, Profile::class.java)
                     startActivity(intent)
-                    true
-                }
-                R.id.nav_settings -> {
-                    // Handle Settings
                     true
                 }
                 R.id.nav_new_auction -> {
@@ -85,6 +83,13 @@ class BidAuction : AppCompatActivity() {
                     startActivity(intent)
                     true
                 }
+                R.id.nav_logout ->{
+                    auth.signOut()
+                    val intent = Intent(this,Login::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                    true
+                }
                 else -> false
             }
         }
@@ -93,12 +98,9 @@ class BidAuction : AppCompatActivity() {
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
-
         val docRef = db.collection("auctions").document(auctionId.toString())
 
         bidSubmit = findViewById(R.id.bidding_button_submit)
-
-
 
 
         // Set up the RecyclerView with the custom adapter

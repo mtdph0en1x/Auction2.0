@@ -7,33 +7,29 @@
             android:icon="@drawable/outline_view_headline_24"
             android:title="@string/nav_home" />
         <item
+            android:id="@+id/nav_new_auction"
+            android:icon="@drawable/baseline_add_24"
+            android:title="@string/add_a_new_auction" />
+        <item
+            android:id="@+id/nav_observed"
+            android:icon="@drawable/baseline_remove_red_eye"
+            android:title="@string/observe" />
+        <item
             android:id="@+id/nav_my_auction"
             android:icon="@drawable/outline_view_headline_24"
             android:title="@string/my_auctions" />
         <item
-            android:id="@+id/nav_new_auction"
-            android:icon="@drawable/outline_view_headline_24"
-            android:title="@string/add_a_new_auction" />
+            android:id="@+id/nav_notifications"
+            android:icon="@drawable/baseline_local_post_office_24"
+            android:title="@string/notifications" />
         <item
             android:id="@+id/nav_profile"
-            android:icon="@drawable/outline_view_headline_24"
+            android:icon="@drawable/baseline_person_24"
             android:title="@string/profile" />
         <item
-            android:id="@+id/nav_settings"
-            android:icon="@drawable/outline_view_headline_24"
-            android:title="@string/settings" />
-        <item
             android:id="@+id/nav_logout"
-            android:icon="@drawable/outline_view_headline_24"
+            android:icon="@drawable/baseline_logout_24"
             android:title="@string/logout" />
-        <item
-            android:id="@+id/nav_observed"
-            android:icon="@drawable/outline_view_headline_24"
-            android:title="@string/observe" />
-        <item
-            android:id="@+id/nav_notifications"
-            android:icon="@drawable/outline_view_headline_24"
-            android:title="@string/notifications" />
 
 
 

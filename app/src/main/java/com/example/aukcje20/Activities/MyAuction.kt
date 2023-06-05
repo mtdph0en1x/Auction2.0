@@ -57,10 +57,6 @@ class MyAuction : AppCompatActivity() {
                     startActivity(intent)
                     true
                 }
-                R.id.nav_settings -> {
-                    // Handle Settings
-                    true
-                }
                 R.id.nav_new_auction -> {
                     val intent = Intent(this, NewAuction::class.java)
                     startActivity(intent)
@@ -78,6 +74,13 @@ class MyAuction : AppCompatActivity() {
                 }
                 R.id.nav_notifications ->{
                     val intent = Intent(this, Notifications::class.java)
+                    startActivity(intent)
+                    true
+                }
+                R.id.nav_logout ->{
+                    auth.signOut()
+                    val intent = Intent(this,Login::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
                     true
                 }

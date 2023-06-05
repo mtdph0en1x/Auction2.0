@@ -23,7 +23,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_show_auction.*
-import java.util.ArrayList
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class ShowAuction : AppCompatActivity() {
@@ -41,7 +42,7 @@ class ShowAuction : AppCompatActivity() {
     private lateinit var aucGoBack: ImageButton
     private lateinit var aucObserveButton: ImageButton
     private var db = Firebase.firestore
-
+    private lateinit var auth: FirebaseAuth
 
 
     @SuppressLint("NotifyDataSetChanged")
@@ -69,6 +70,7 @@ class ShowAuction : AppCompatActivity() {
         val bundle: Bundle? = intent.extras
         val auctionId = bundle?.getString("Auctionid")
 
+        auth = FirebaseAuth.getInstance()
 
         val currentUser = FirebaseAuth.getInstance().currentUser
         val userUID = currentUser?.uid.toString()
@@ -92,10 +94,6 @@ class ShowAuction : AppCompatActivity() {
                     startActivity(intent)
                     true
                 }
-                R.id.nav_settings -> {
-                    // Handle Settings
-                    true
-                }
                 R.id.nav_new_auction -> {
                     val intent = Intent(this, NewAuction::class.java)
                     startActivity(intent)
@@ -116,6 +114,13 @@ class ShowAuction : AppCompatActivity() {
                     startActivity(intent)
                     true
                 }
+                R.id.nav_logout ->{
+                    auth.signOut()
+                    val intent = Intent(this,Login::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                    true
+                }
                 else -> false
             }
         }
@@ -124,14 +129,17 @@ class ShowAuction : AppCompatActivity() {
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
-
+        val currentTime = Calendar.getInstance().time
+        val dateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault())
+        val date = dateFormat.format(currentTime).orEmpty()
+        val currentDate = dateFormat.parse(date)
 
 
         // Initialize the RecyclerView and ImageAdapter
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         imageUriList = ArrayList()
-        var imageAdapter: ImageAdapter = ImageAdapter(imageUriList)
+        val imageAdapter: ImageAdapter = ImageAdapter(imageUriList)
         recyclerView.adapter = imageAdapter
 
         db.collection("auctions")
@@ -140,15 +148,26 @@ class ShowAuction : AppCompatActivity() {
             .addOnSuccessListener { documentSnapshot ->
                 auction = documentSnapshot.toObject(Auction::class.java)!!
 
+                val dateAuction = dateFormat.parse(auction.auctionEnd.toString())
                 //Setting values
                 aucName.text = auction.name
                 aucDescription.text = auction.description
                 imageUriList.clear()
                 imageUriList.addAll(auction.imageUrls)
-                aucPrice.text = auction.startPrice.toString()
+                aucPrice.text = "${auction.startPrice.toString()} $"
                 aucEnd.text = auction.auctionEnd
 
                 imageAdapter.notifyDataSetChanged()
+
+                if (currentDate != null) {
+                    if(currentDate < dateAuction) {
+                        aucBid.visibility = View.VISIBLE
+                    }
+                    else
+                    {
+                        aucBid.visibility = View.GONE
+                    }
+                }
 
                 if (currentUser != null && auction.uid == currentUser.uid) {
                     aucEditButton.visibility = View.VISIBLE
@@ -184,21 +203,33 @@ class ShowAuction : AppCompatActivity() {
                 .addOnSuccessListener { documentSnapshot ->
                     auction = documentSnapshot.toObject(Auction::class.java)!!
 
+                    val dateAuction = dateFormat.parse(auction.auctionEnd.toString())
                     //Setting values
                     aucName.text = auction.name
                     aucDescription.text = auction.description
                     imageUriList.clear()
                     imageUriList.addAll(auction.imageUrls)
-                    aucPrice.text = auction.startPrice.toString()
+                    aucPrice.text = "${auction.startPrice.toString()} $"
                     aucEnd.text = auction.auctionEnd
 
                     imageAdapter.notifyDataSetChanged()
+
+                    if (currentDate != null) {
+                        if(currentDate < dateAuction) {
+                            aucBid.visibility = View.VISIBLE
+                        }
+                        else
+                        {
+                            aucBid.visibility = View.GONE
+                        }
+                    }
 
                     if (currentUser != null && auction.uid == currentUser.uid) {
                         aucEditButton.visibility = View.VISIBLE
                     } else {
                         aucEditButton.visibility = View.GONE
                     }
+
                 }
 
             swipeRefreshLayout.isRefreshing = false

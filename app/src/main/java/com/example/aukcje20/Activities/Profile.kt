@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.aukcje20.DataClasses.User
 import com.example.aukcje20.R
 import com.google.android.material.navigation.NavigationView
@@ -16,10 +17,11 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 class Profile : AppCompatActivity() {
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var profNickname: TextView
     private lateinit var profEmail: TextView
     private lateinit var profButton: Button
-
+    private lateinit var auth: FirebaseAuth
     private val db = Firebase.firestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,6 +31,8 @@ class Profile : AppCompatActivity() {
         profEmail = findViewById(R.id.tv_email_show)
         profNickname = findViewById(R.id.tv_nickname_show)
         profButton = findViewById(R.id.btn_edit_profile)
+
+        auth = FirebaseAuth.getInstance()
 
         val currentUser = FirebaseAuth.getInstance().currentUser
         val userUID = currentUser?.uid.toString()
@@ -49,10 +53,6 @@ class Profile : AppCompatActivity() {
                     startActivity(intent)
                     true
                 }
-                R.id.nav_settings -> {
-                    // Handle Settings
-                    true
-                }
                 R.id.nav_new_auction -> {
                     val intent = Intent(this, NewAuction::class.java)
                     startActivity(intent)
@@ -70,6 +70,13 @@ class Profile : AppCompatActivity() {
                 }
                 R.id.nav_notifications ->{
                     val intent = Intent(this, Notifications::class.java)
+                    startActivity(intent)
+                    true
+                }
+                R.id.nav_logout ->{
+                    auth.signOut()
+                    val intent = Intent(this,Login::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
                     true
                 }
@@ -98,6 +105,19 @@ class Profile : AppCompatActivity() {
         profButton.setOnClickListener{
             val intent = Intent(this, EditProfile::class.java)
             startActivity(intent)
+        }
+
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout)
+        swipeRefreshLayout.setOnRefreshListener {
+            val docRef = db.collection("users").document(userUID)
+
+            docRef.get().addOnSuccessListener {document ->
+                val user: User? = document.toObject(User::class.java)
+                profNickname.text = user?.nickname.toString()
+                profEmail.text = userEmail
+            }
+
+            swipeRefreshLayout.isRefreshing = false
         }
 
     }

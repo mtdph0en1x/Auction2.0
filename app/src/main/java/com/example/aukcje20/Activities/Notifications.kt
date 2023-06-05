@@ -19,7 +19,7 @@ import com.google.firebase.ktx.Firebase
 class Notifications : AppCompatActivity() {
 
     private val db = Firebase.firestore
-
+    private lateinit var auth: FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_notifications)
@@ -28,6 +28,8 @@ class Notifications : AppCompatActivity() {
         val currentUser = FirebaseAuth.getInstance().currentUser
         val userUID = currentUser?.uid.toString()
         val documentRef = db.collection("users").document(userUID)
+
+        auth = FirebaseAuth.getInstance()
 
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
@@ -42,10 +44,6 @@ class Notifications : AppCompatActivity() {
                 R.id.nav_profile -> {
                     val intent = Intent(this, Profile::class.java)
                     startActivity(intent)
-                    true
-                }
-                R.id.nav_settings -> {
-                    // Handle Settings
                     true
                 }
                 R.id.nav_new_auction -> {
@@ -65,6 +63,13 @@ class Notifications : AppCompatActivity() {
                 }
                 R.id.nav_notifications ->{
                     val intent = Intent(this, Notifications::class.java)
+                    startActivity(intent)
+                    true
+                }
+                R.id.nav_logout ->{
+                    auth.signOut()
+                    val intent = Intent(this,Login::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
                     true
                 }

@@ -10,12 +10,13 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.aukcje20.R
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.auth.FirebaseAuth
 
 class NotificationShow : AppCompatActivity() {
     private lateinit var tvInformation: TextView
     private lateinit var tvHeader: TextView
     private lateinit var notificationGoBack: ImageButton
-
+    private lateinit var auth: FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_notifiaction_show)
@@ -30,6 +31,8 @@ class NotificationShow : AppCompatActivity() {
         tvInformation.text = text
         tvHeader.text = header
 
+        auth = FirebaseAuth.getInstance()
+
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
 
@@ -43,10 +46,6 @@ class NotificationShow : AppCompatActivity() {
                 R.id.nav_profile -> {
                     val intent = Intent(this, Profile::class.java)
                     startActivity(intent)
-                    true
-                }
-                R.id.nav_settings -> {
-                    // Handle Settings
                     true
                 }
                 R.id.nav_new_auction -> {
@@ -66,6 +65,13 @@ class NotificationShow : AppCompatActivity() {
                 }
                 R.id.nav_notifications ->{
                     val intent = Intent(this, Notifications::class.java)
+                    startActivity(intent)
+                    true
+                }
+                R.id.nav_logout ->{
+                    auth.signOut()
+                    val intent = Intent(this,Login::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
                     true
                 }

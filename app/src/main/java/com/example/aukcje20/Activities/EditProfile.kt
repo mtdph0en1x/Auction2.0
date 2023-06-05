@@ -28,7 +28,7 @@ class EditProfile : AppCompatActivity() {
     private lateinit var profPassword: EditText
     private lateinit var profButton: Button
     private lateinit var profBack: ImageButton
-
+    private lateinit var auth: FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_profile)
@@ -43,7 +43,7 @@ class EditProfile : AppCompatActivity() {
         val userUID = currentUser?.uid.toString()
 
         val docUser = db.collection("users").document(userUID)
-
+        auth = FirebaseAuth.getInstance()
 
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
@@ -58,10 +58,6 @@ class EditProfile : AppCompatActivity() {
                 R.id.nav_profile -> {
                     val intent = Intent(this, Profile::class.java)
                     startActivity(intent)
-                    true
-                }
-                R.id.nav_settings -> {
-                    // Handle Settings
                     true
                 }
                 R.id.nav_new_auction -> {
@@ -81,6 +77,13 @@ class EditProfile : AppCompatActivity() {
                 }
                 R.id.nav_notifications ->{
                     val intent = Intent(this, Notifications::class.java)
+                    startActivity(intent)
+                    true
+                }
+                R.id.nav_logout ->{
+                    auth.signOut()
+                    val intent = Intent(this,Login::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
                     true
                 }
